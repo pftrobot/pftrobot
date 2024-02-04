@@ -1,6 +1,6 @@
 import { css, SerializedStyles } from '@emotion/react'
 
-const breakPoints = {
+export const breakPoints = {
   desktop: 1920,
   tablet: 980,
   mobile: 767,

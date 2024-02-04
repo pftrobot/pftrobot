@@ -1,12 +1,28 @@
 // import '@/styles/globals.css'
-import type { AppProps } from 'next/app'
+import type { AppContext, AppInitialProps, AppProps } from 'next/app'
 import Head from 'next/head'
 import { globalStyles } from '@/styles/GlobalStyle'
 import { Fragment } from 'react'
 import { ThemeProvider } from '@emotion/react'
-import theme from '@/styles/theme'
+import themeLight from '@/styles/theme'
+import themeDark from '@/styles/themeDark'
+import { NextComponentType } from 'next'
+import { useThemeStore } from '@/lib/store'
+import Layout from '@/components/common/Layout'
 
-export default function App({ Component, pageProps }: AppProps) {
+type CustomPageProps = {
+  isDarkMode: boolean
+  // dehydratedState?: DehydratedState;
+}
+
+type CustomAppProps = AppProps<CustomPageProps>
+
+const App: NextComponentType<AppContext, AppInitialProps, CustomAppProps> = ({
+  Component,
+  pageProps,
+}: AppProps) => {
+  const { theme } = useThemeStore()
+
   return (
     <Fragment>
       <Head>
@@ -37,10 +53,16 @@ export default function App({ Component, pageProps }: AppProps) {
         {/*<meta name="og:image" content="og.png" />*/}
         <title>포트폴리오</title>
       </Head>
-      {globalStyles}
-      <ThemeProvider theme={theme}>
-        <Component {...pageProps} />
+      {/*<ThemeProvider theme={theme}>*/}
+      <ThemeProvider theme={theme === 'dark' ? themeDark : themeLight}>
+        {globalStyles}
+        <Layout>
+          <Component {...pageProps} />
+        </Layout>
       </ThemeProvider>
+      <div id="overlay" />
     </Fragment>
   )
 }
+
+export default App

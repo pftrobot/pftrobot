@@ -1,8 +1,8 @@
-import { css, Global } from '@emotion/react'
+import { css, Global, Theme } from '@emotion/react'
 
 export const globalStyles = (
   <Global
-    styles={css`
+    styles={(theme: Theme) => css`
       html,
       body,
       h1,
@@ -47,9 +47,56 @@ export const globalStyles = (
         padding: 0;
         margin: 0;
         border: 0;
+        box-sizing: border-box;
+      }
+      html,
+      body,
+      body > div {
+        height: 100%;
+      }
+      html,
+      input,
+      textarea,
+      button {
+        font-family:
+          'Pretendard',
+          -apple-system,
+          BlinkMacSystemFont,
+          Segoe UI,
+          Roboto,
+          Oxygen,
+          Ubuntu,
+          Cantarell,
+          Fira Sans,
+          Droid Sans,
+          Helvetica Neue,
+          sans-serif,
+          apple color emoji,
+          segoe ui emoji,
+          segoe ui symbol,
+          noto color emoji,
+          sans-serif;
+        -webkit-font-smoothing: subpixel-antialiased;
+        -webkit-text-size-adjust: 100%;
+        -webkit-appearance: none;
+        -webkit-tap-highlight-color: transparent;
+        user-select: none;
       }
       body {
         line-height: 1;
+        letter-spacing: -0.1px;
+        color: ${theme.colors.white};
+        background-color: ${theme.colors.black};
+        transition: background-color 0.15s linear;
+      }
+      body::-webkit-scrollbar {
+        width: 6px;
+        background-color: rgba(0, 0, 0, 0.05);
+      }
+
+      body::-webkit-scrollbar-thumb {
+        border-radius: 3px;
+        background: rgba(27, 27, 41, 0.3);
       }
       h1,
       h2,
@@ -77,11 +124,13 @@ export const globalStyles = (
         &:visited,
         &:focus,
         &:link {
-          color: #000;
+          //color: #fff;
+          color: ${theme.colors.white};
           text-decoration: none;
         }
       }
       button {
+        padding: 0;
         border: 0;
         background-color: transparent;
         cursor: pointer;
