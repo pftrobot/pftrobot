@@ -1,0 +1,33 @@
+{
+  "compilerOptions": {
+//    "types": ["@emotion/react/types/css-prop"],
+//    "parser": "@typescript-eslint/parser",
+//    "plugins": ["@typescript-eslint", "prettier"],
+//    "parserOptions": {
+//      "project": "./tsconfig.json"
+//    },
+//    "extends": [
+//      "plugin:@typescript-eslint/recommended",
+//      "plugin:prettier/recommended",
+//      "prettier/@typescript-eslint"
+//    ],
+    "lib": ["dom", "dom.iterable", "esnext"],
+    "allowJs": true,
+    "skipLibCheck": true,
+    "strict": true,
+    "noEmit": true,
+    "esModuleInterop": true,
+    "module": "esnext",
+    "moduleResolution": "node",
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "jsx": "preserve",
+    "jsxImportSource": "@emotion/react",
+    "incremental": true,
+    "paths": {
+      "@/*": ["./*"]
+    }
+  },
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.d.ts", "**/*.tsx"],
+  "exclude": ["node_modules"]
+}
