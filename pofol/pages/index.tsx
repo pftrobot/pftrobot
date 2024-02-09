@@ -4,7 +4,8 @@ import { MutableRefObject, useEffect, useRef, useState } from 'react'
 import { NextPage } from 'next'
 import Link from 'next/link'
 
-import gsap from 'gsap-trial'
+// import gsap from 'gsap-trial'
+import gsap from 'gsap'
 import { useGSAP } from '@gsap/react'
 import { css, Theme } from '@emotion/react'
 
@@ -47,7 +48,7 @@ const HomePage: NextPage = () => {
       <div css={ContentCSS}>
         <Intro />
         <p className="title" ref={refTitle}>
-          HI I'm Yiseul
+          HI I&apos;m Yiseul
         </p>
         <p className="desc" ref={refDesc}>
           5년차 프론트엔드 개발자 오이슬입니다 <br />
