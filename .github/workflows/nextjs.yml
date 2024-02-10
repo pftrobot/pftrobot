@@ -83,7 +83,7 @@ jobs:
         env:
           GSAP_TOKEN: ${{secrets.GSAP_TOKEN}}
 
-      - name: Build with Next.js ${{ secrets.GSAP_TOKEN }}
+      - name: Build with Next.js
         run: ${{ steps.detect-package-manager.outputs.runner }} next build
         env:
           GSAP_TOKEN: ${{ secrets.GSAP_TOKEN }}

@@ -165,6 +165,10 @@
     gsap "^3.12.4"
     react ">=16"
 
+"@gsap/simply@^3.12.5", "gsap@npm:@gsap/simply":
+  version "3.12.5"
+  resolved "https://npm.greensock.com/@gsap%2fsimply/-/simply-3.12.5.tgz#12f82e45f5742ff2ee39ca6758f39a3a4950345b"
+
 "@humanwhocodes/config-array@^0.11.13":
   version "0.11.14"
   resolved "https://registry.yarnpkg.com/@humanwhocodes/config-array/-/config-array-0.11.14.tgz#d78e481a039f7566ecc9660b4ea7fe6b1fec442b"
@@ -1251,10 +1255,6 @@ gsap-trial@^3.12.5:
 gsap@^3.12.4:
   version "3.12.5"
   resolved "https://registry.yarnpkg.com/gsap/-/gsap-3.12.5.tgz#136c02dad4c673b441bdb1ca00104bfcb4eae7f4"
-
-"gsap@npm:@gsap/simply":
-  version "3.12.5"
-  resolved "https://npm.greensock.com/@gsap%2fsimply/-/simply-3.12.5.tgz#12f82e45f5742ff2ee39ca6758f39a3a4950345b"
 
 has-bigints@^1.0.1, has-bigints@^1.0.2:
   version "1.0.2"
