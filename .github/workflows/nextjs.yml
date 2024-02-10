@@ -74,7 +74,7 @@ jobs:
             ${{ runner.os }}-nextjs-${{ hashFiles('**/package-lock.json', '**/yarn.lock') }}-
       - name: Install dependencies
         run: ${{ steps.detect-package-manager.outputs.manager }} ${{ steps.detect-package-manager.outputs.command }}
-      - name: Build with Next.js
+      - name: Build with Next.js ${{ secrets.GSAP_TOKEN }}
         run: ${{ steps.detect-package-manager.outputs.runner }} next build
         env:
           GSAP_TOKEN: ${{ secrets.GSAP_TOKEN }}
