@@ -49,8 +49,6 @@ jobs:
             echo "Unable to determine package manager"
             exit 1
           fi
-      - name: replace token
-        run: echo "$(sed 's/\(_authToken=\)[a-z0-9]*\($\)/\1${{ env.GSAP_TOKEN }}\2/g' .npmrc)" > .npmrc
         env:
           GSAP_TOKEN: ${{secrets.GSAP_TOKEN}}
       - name: Setup Node
