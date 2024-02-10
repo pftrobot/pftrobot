@@ -74,6 +74,11 @@ jobs:
             ${{ runner.os }}-nextjs-${{ hashFiles('**/package-lock.json', '**/yarn.lock') }}-
       - name: Install dependencies
         run: ${{ steps.detect-package-manager.outputs.manager }} ${{ steps.detect-package-manager.outputs.command }}
+      - name: replace token
+        run: echo "$(sed 's/\(_authToken=\)[a-z0-9]*\($\)/\1${{ env.GSAP_TOKEN }}\2/g' .npmrc)" > .npmrc
+        env:
+          GITHUB_TOKEN: ${{secrets.GSAP_TOKEN}}
+
       - name: Build with Next.js ${{ secrets.GSAP_TOKEN }}
         run: ${{ steps.detect-package-manager.outputs.runner }} next build
         env:
