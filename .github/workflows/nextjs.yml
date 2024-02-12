@@ -98,7 +98,7 @@ jobs:
         uses: actions/deploy-pages@v4
         with:
 #          branch: gh-pages
-          folder: out
+          folder: out/.nojekyll
           clean: true
         env:
           GSAP_TOKEN: ${{ secrets.GSAP_TOKEN }}
