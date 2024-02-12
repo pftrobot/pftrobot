@@ -8,10 +8,7 @@ const nextConfig = {
     loader: 'imgix',
     path: 'https://pftrobot.github.io/pftrobot',
   },
-  exportPathMap: async function (
-    defaultPathMap,
-    { dev, dir, outDir, distDir, buildId }
-  ) {
+  exportPathMap: async function () {
     return {
       '/': { page: '/' },
     };
