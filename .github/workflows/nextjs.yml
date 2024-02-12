@@ -90,9 +90,9 @@ jobs:
         uses: actions/upload-pages-artifact@v2
         with:
           name: out
-          path: ./.next
+          path: ./dist
 
-      - run: touch out
+#      - run: touch dist
 
 #      - name: Deploy to GitHub Pages
 #        id: deployment
