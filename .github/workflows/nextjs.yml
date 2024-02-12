@@ -87,7 +87,7 @@ jobs:
 #        env:
 #          GSAP_TOKEN: ${{ secrets.GSAP_TOKEN }}
 
-      - run: touch out
+      - run: touch dfsdgd
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
