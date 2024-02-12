@@ -87,13 +87,13 @@ jobs:
 #        env:
 #          GSAP_TOKEN: ${{ secrets.GSAP_TOKEN }}
 
-      - run: touch dist
-
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v2
         with:
           name: out
           path: ./dist
+
+#      - run: touch dist
 
 #      - name: Deploy to GitHub Pages
 #        id: deployment
