@@ -7,7 +7,7 @@ name: Deploy Next.js site to Pages
 on:
   # Runs on pushes targeting the default branch
   push:
-    branches: [main]
+    branches: ["main"]
 
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
@@ -49,8 +49,6 @@ jobs:
             echo "Unable to determine package manager"
             exit 1
           fi
-        env:
-          GSAP_TOKEN: ${{secrets.GSAP_TOKEN}}
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
@@ -77,9 +75,7 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-nextjs-${{ hashFiles('**/package-lock.json', '**/yarn.lock') }}-
       - name: Install dependencies
-        run: |
-          echo "//npm.greensock.com/:_authToken=${{ secrets.GSAP_TOKEN }}" > ~/.npmrc
-          ${{ steps.detect-package-manager.outputs.manager }} ${{ steps.detect-package-manager.outputs.command }}
+        run: ${{ steps.detect-package-manager.outputs.manager }} ${{ steps.detect-package-manager.outputs.command }}
         env:
           GSAP_TOKEN: ${{secrets.GSAP_TOKEN}}
 
