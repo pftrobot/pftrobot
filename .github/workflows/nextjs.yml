@@ -91,7 +91,7 @@ jobs:
 #        with:
 #          path: ./out
 
-      - run: touch out/.nojekyll
+      - run: touch out
 
       - name: Deploy to GitHub Pages
         id: deployment
