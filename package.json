@@ -1,6 +1,7 @@
 {
   "name": "pofol",
   "version": "0.1.0",
+  "homepage": "https://pftrobot.github.io/pftrobot",
   "private": true,
   "scripts": {
     "dev": "next dev",
