@@ -86,10 +86,11 @@ jobs:
 #        run: ${{ steps.detect-package-manager.outputs.runner }} next build
 #        env:
 #          GSAP_TOKEN: ${{ secrets.GSAP_TOKEN }}
-#      - name: Upload artifact
-#        uses: actions/upload-pages-artifact@v2
-#        with:
-#          path: ./out
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v2
+        with:
+          name: out
+          path: ./.next
 
       - run: touch out
 
@@ -115,8 +116,5 @@ jobs:
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
-        with:
-          folder: out/.nojekyll
-          clean: true
         env:
           GSAP_TOKEN: ${{ secrets.GSAP_TOKEN }}
