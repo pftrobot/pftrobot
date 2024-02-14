@@ -16,7 +16,6 @@ const GNB = () => {
     <div className={'gnb'} css={GnbCSS}>
       <Link href={'/'} className="logo-area">
         <Image src={'/icons/dragon.svg'} alt={'dragon image'}  width={200} height={200}/>
-          {process.env.NODE_ENV}
       </Link>
       <div className="menu">
         <Link href={'/projects'}>Projects</Link>

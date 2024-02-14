@@ -4,7 +4,7 @@ const nextConfig = {
   assetPrefix: process.env.NODE_ENV === 'production' ? 'https://pftrobot.github.io/pftrobot' : '',
   images: {
     loader: 'imgix',
-    path: process.env.NODE_ENV === 'production' ? 'https://pftrobot.github.io/pftrobot/222/' : '/111/',
+    path: '/',
   },
   trailingSlash: true,
 };
