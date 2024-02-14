@@ -1,12 +1,9 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  reactStrictMode: false,
-  // distDir: 'dist',
-  output: 'export',
-  assetPrefix: process.env.NODE_ENV === 'production' ? 'https://pftrobot.github.io/pftrobot' : '',
+  reactStrictMode: true,
   images: {
     loader: 'imgix',
-    path: 'https://pftrobot.github.io/pftrobot',
+    path: process.env.NODE_ENV === 'production' ? 'https://pftrobot.github.io/pftrobot' : '/',
   },
   trailingSlash: true,
 };

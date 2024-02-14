@@ -16,7 +16,7 @@
     "@gsap/simply": "^3.12.5",
     "gsap": "npm:@gsap/simply",
     "gsap-trial": "^3.12.5",
-    "next": "14.1.0",
+    "next": "13.5.2",
     "react": "^18",
     "react-dom": "^18",
     "zustand": "^4.5.0"

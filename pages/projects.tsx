@@ -1,8 +1,9 @@
+import * as React from "react"
 import { Fragment, useEffect, useRef, useState } from 'react'
 import { createPortal } from 'react-dom'
 import { NextPage } from 'next'
 import Link from 'next/link'
-import Image from 'next/image'
+import Image from '@/components/common/Image'
 
 import gsap from 'gsap-trial'
 import { useGSAP } from '@gsap/react'
