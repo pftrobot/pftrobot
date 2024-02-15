@@ -755,7 +755,7 @@ const OverlayCSS = (theme: Theme) => css`
         height: 16px;
         margin-top: -${theme.spacings.xxxxxxs}px;
         margin-right: ${theme.spacings.xxxxs}px;
-        background: url(${isProd ? '/pftrobot/icons/arrow_left.svg': '/icons/www.svg'
+        background: url(${isProd ? '/pftrobot/icons/www.svg': '/icons/www.svg'
       }) no-repeat 0 50%;
         background-size: 16px;
 
