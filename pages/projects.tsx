@@ -33,7 +33,7 @@ type TOpenModal = (target: IProject) => void
 
 const ProjectPage: NextPage = () => {
   const isProd = process.env.NODE_ENV === 'production'
-  const homepage = 'https://pftrobot.github.io/pftfobot'
+  const homepage = 'https://pftrobot.github.io/pftrobot'
   const isMounted = useMounted()
   const [currentProject, setCurrentProject] = useState<IProject | null>(null)
   const refContent: TRef = useRef()
