@@ -32,6 +32,8 @@ type TClickAnimation = (isOpen?: boolean) => void
 type TOpenModal = (target: IProject) => void
 
 const ProjectPage: NextPage = () => {
+  const isProd = process.env.NODE_ENV === 'production'
+  const homepage = 'https://pftrobot.github.io/pftfobot'
   const isMounted = useMounted()
   const [currentProject, setCurrentProject] = useState<IProject | null>(null)
   const refContent: TRef = useRef()
@@ -310,7 +312,7 @@ const ProjectPage: NextPage = () => {
                     </video>
                   ) : (
                     <Image
-                      src={firstMedia.source}
+                      src={isProd ? homepage + firstMedia.source : firstMedia.source}
                       alt={'item image'}
                       width={500}
                       height={500}
@@ -368,7 +370,7 @@ const ProjectPage: NextPage = () => {
                               </video>
                             ) : (
                               <Image
-                                src={currentMedia.source}
+                                src={isProd ? homepage + currentMedia.source : currentMedia.source}
                                 alt={'item image'}
                                 width={500}
                                 height={500}

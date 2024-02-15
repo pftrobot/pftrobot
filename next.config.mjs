@@ -1,8 +1,8 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
-  assetPrefix: process.env.NODE_ENV === 'production' ? 'https://pftrobot.github.io/pftrobot' : '',
-  basePath: process.env.NODE_ENV === 'production' ? 'https://pftrobot.github.io/pftrobot' : '',
+  distDir: 'dist',
+  assetPrefix: 'https://pftrobot.github.io/pftrobot',
   images: {
     loader: 'imgix',
     path: '/',
