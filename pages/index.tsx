@@ -4,7 +4,6 @@ import { MutableRefObject, useEffect, useRef, useState } from 'react'
 import { NextPage } from 'next'
 import Link from 'next/link'
 
-// import gsap from 'gsap-trial'
 import gsap from 'gsap'
 import { useGSAP } from '@gsap/react'
 import { css, Theme } from '@emotion/react'
@@ -13,6 +12,8 @@ import { MobileStyle, TabletStyle } from '@/styles/mediaQuery'
 import Intro from '@/components/intro'
 
 export type TRef = MutableRefObject<any>
+
+const isProd = process.env.NODE_ENV === 'production'
 
 const HomePage: NextPage = () => {
   const refContent: TRef = useRef()
@@ -152,7 +153,7 @@ export const ButtonCSS = (theme: Theme) => css`
     width: 4px;
     height: 12px;
     transform: translate(100%, -50%);
-    background: url('/icons/arrow_right_dark.svg') no-repeat 100% 50%;
+     background: url(${isProd ? '/pftrobot/icons/arrow_right_dark.svg':'/icons/arrow_right_dark.svg'}) no-repeat 100% 50%;
     background-size: 20px;
     transition: width 0.3s;
   }

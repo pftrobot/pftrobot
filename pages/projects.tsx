@@ -13,6 +13,8 @@ import { MobileStyle } from '@/styles/mediaQuery'
 
 import { lockScroll, unlockScroll, useMounted } from '@/lib/utils'
 
+const isProd = process.env.NODE_ENV === 'production'
+
 interface IMedia {
   type: string
   source: string
@@ -32,8 +34,6 @@ type TClickAnimation = (isOpen?: boolean) => void
 type TOpenModal = (target: IProject) => void
 
 const ProjectPage: NextPage = () => {
-  const isProd = process.env.NODE_ENV === 'production'
-  const homepage = 'https://pftrobot.github.io/pftrobot'
   const isMounted = useMounted()
   const [currentProject, setCurrentProject] = useState<IProject | null>(null)
   const refContent: TRef = useRef()
@@ -308,11 +308,11 @@ const ProjectPage: NextPage = () => {
                 <div className="media">
                   {firstMedia.type === 'video' ? (
                     <video muted autoPlay loop>
-                      <source src={isProd ? homepage + firstMedia.source : firstMedia.source} type={'video/mp4'} />
+                      <source src={isProd ? '/pftrobot' + firstMedia.source : firstMedia.source} type={'video/mp4'} />
                     </video>
                   ) : (
                     <Image
-                      src={isProd ? homepage + firstMedia.source : firstMedia.source}
+                      src={isProd ? '/pftrobot' + firstMedia.source : firstMedia.source}
                       alt={'item image'}
                       width={500}
                       height={500}
@@ -364,13 +364,13 @@ const ProjectPage: NextPage = () => {
                             {currentMedia.type === 'video' ? (
                               <video muted autoPlay loop>
                                 <source
-                                  src={isProd ? homepage + currentMedia.source : currentMedia.source}
+                                  src={isProd ? '/pftrobot' + currentMedia.source : currentMedia.source}
                                   type={'video/mp4'}
                                 />
                               </video>
                             ) : (
                               <Image
-                                src={isProd ? homepage + currentMedia.source : currentMedia.source}
+                                src={isProd ? '/pftrobot' + currentMedia.source : currentMedia.source}
                                 alt={'item image'}
                                 width={500}
                                 height={500}
@@ -658,7 +658,8 @@ const OverlayCSS = (theme: Theme) => css`
       font-size: 0;
       border: solid 2px ${theme.colors.gray780};
       border-radius: 50%;
-      background: url('/icons/arrow_left.svg') no-repeat 30% 50%
+      background: url(${isProd ? '/pftrobot/icons/arrow_left.svg': '/icons/arrow_left.svg'
+    }) no-repeat 30% 50%
         ${theme.colors.gray800};
       background-size: 10px;
       transition: background-color 0.2s;
@@ -754,7 +755,8 @@ const OverlayCSS = (theme: Theme) => css`
         height: 16px;
         margin-top: -${theme.spacings.xxxxxxs}px;
         margin-right: ${theme.spacings.xxxxs}px;
-        background: url('/icons/www.svg') no-repeat 0 50%;
+        background: url(${isProd ? '/pftrobot/icons/arrow_left.svg': '/icons/www.svg'
+      }) no-repeat 0 50%;
         background-size: 16px;
 
         ${MobileStyle(
