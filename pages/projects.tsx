@@ -308,7 +308,7 @@ const ProjectPage: NextPage = () => {
                 <div className="media">
                   {firstMedia.type === 'video' ? (
                     <video muted autoPlay loop>
-                      <source src={firstMedia.source} type={'video/mp4'} />
+                      <source src={isProd ? homepage + firstMedia.source : firstMedia.source} type={'video/mp4'} />
                     </video>
                   ) : (
                     <Image
@@ -364,7 +364,7 @@ const ProjectPage: NextPage = () => {
                             {currentMedia.type === 'video' ? (
                               <video muted autoPlay loop>
                                 <source
-                                  src={currentMedia.source}
+                                  src={isProd ? homepage + currentMedia.source : currentMedia.source}
                                   type={'video/mp4'}
                                 />
                               </video>

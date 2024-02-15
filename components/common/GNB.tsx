@@ -1,8 +1,10 @@
+import * as React from 'react'
+import { useEffect } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
-import * as React from 'react'
+
 import { useThemeStore } from '@/lib/store'
-import { useEffect } from 'react'
+import dragon from '@/public/icons/dragon.svg'
 import { css, Theme } from '@emotion/react'
 import { MobileStyle } from '@/styles/mediaQuery'
 
@@ -15,7 +17,7 @@ const GNB = () => {
   return (
     <div className={'gnb'} css={GnbCSS}>
       <Link href={'/'} className="logo-area">
-        <Image src={'/icons/dragon.svg'} alt={'dragon image'}  width={200} height={200}/>
+        <Image src={dragon} alt={'dragon image'} />
       </Link>
       <div className="menu">
         <Link href={'/projects'}>Projects</Link>
