@@ -1,14 +1,13 @@
+import * as React from 'react'
 import { NextPage } from 'next'
 import { useRef, useState } from 'react'
+
 import { useGSAP } from '@gsap/react'
-// import gsap from 'gsap-trial'
 import gsap from 'gsap'
 import { DrawSVGPlugin } from 'gsap/dist/DrawSVGPlugin'
-// import DrawSVGPlugin from 'gsap-trial/dist/DrawSVGPlugin'
-import { TRef } from '@/pages'
-import * as React from 'react'
 import { css, Theme } from '@emotion/react'
 import { breakPoints, MobileStyle } from '@/styles/mediaQuery'
+import { TRef } from '@/pages'
 
 const Intro: NextPage = () => {
   const [introElem, setIntroElem] = useState(true)

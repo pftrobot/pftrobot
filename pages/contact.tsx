@@ -1,18 +1,20 @@
-import { MutableRefObject, useRef } from 'react'
+import * as React from 'react'
+import { FormEvent, MutableRefObject, useEffect, useRef, useState } from 'react'
+import { createPortal } from 'react-dom'
 import { NextPage } from 'next'
 import Link from 'next/link'
-import Image from 'next/image'
 
-import gsap from 'gsap-trial'
+import gsap from 'gsap'
 import { useGSAP } from '@gsap/react'
-
+import emailjs from '@emailjs/browser'
 import { css, Theme } from '@emotion/react'
 import { ButtonCSS, ContainerCSS } from './index'
 import { SubContentCSS } from './projects'
 import { MobileStyle } from '@/styles/mediaQuery'
 
-import emailjs from '@emailjs/browser'
+import { lockScroll, unlockScroll, useMounted } from '@/lib/utils'
 import { useThemeStore } from '@/lib/store'
+import Image from '@/components/common/Image'
 
 type TRef = MutableRefObject<any>
 
@@ -24,25 +26,54 @@ interface IMail {
 
 const ContactPage: NextPage = () => {
   const { theme } = useThemeStore()
+  const isMounted = useMounted()
+  const [isLoading, setIsLoading] = useState(false)
   const refContent: TRef = useRef()
   const form: TRef = useRef()
+  const nameRef: TRef = useRef()
+  const emailRef: TRef = useRef()
+  const contentRef: TRef = useRef()
 
-  const sendEmail = () => {
-    emailjs
-      .sendForm(
-        'service_3kxyi38',
-        'template_8xuweqg',
-        form.current,
-        'eBY8yf0yt5DdtqvhP'
-      )
-      .then(
-        (result) => {
-          alert('메일을 성공적으로 전송했어요. 감사합니다.')
-        },
-        (error) => {
-          alert('메일 전송에 실패했어요. 잠시 후 다시 시도해주세요')
-        }
-      )
+  const showLoading = () => {
+    lockScroll()
+    setIsLoading(true)
+  }
+  const hideLoading = () => {
+    unlockScroll()
+    setIsLoading(false)
+  }
+
+  const sendEmail = (e: FormEvent) => {
+    e.preventDefault()
+
+    if (
+      nameRef.current.value === '' ||
+      emailRef.current.value === '' ||
+      contentRef.current.value === ''
+    ) {
+      alert('내용을 모두 입력해주세요.')
+    } else {
+      showLoading()
+      emailjs
+        .sendForm(
+          'service_3kxyi38',
+          'template_8xuweqg',
+          form.current,
+          'eBY8yf0yt5DdtqvhP'
+        )
+        .then(
+          (result) => {
+            hideLoading()
+            alert('메일을 성공적으로 전송했어요. 감사합니다.')
+            nameRef.current.value = ''
+            emailRef.current.value = ''
+            contentRef.current.value = ''
+          },
+          (error) => {
+            alert('메일 전송에 실패했어요. 잠시 후 다시 시도해주세요.')
+          }
+        )
+    }
   }
 
   useGSAP(() => {
@@ -67,13 +98,22 @@ const ContactPage: NextPage = () => {
           {/*<button css={CopyBtnCSS}>COPY</button>*/}로 이메일을 보내주세요
         </p>
         <form ref={form} onSubmit={sendEmail} css={FormCSS}>
-          <input type="text" name="name" placeholder={'이름'} />
-          <input type="email" name="email" placeholder={'메일 주소'} />
-          <textarea name="message" placeholder={'내용을 입력해주세요'} />
-          <input type="submit" value="전송하기" />
-          {/*<button className="submit-btn">*/}
-          {/*  <span>전송하기</span>*/}
-          {/*</button>*/}
+          <input type="text" name="name" placeholder={'이름'} ref={nameRef} />
+          <input
+            type="email"
+            name="email"
+            placeholder={'메일 주소'}
+            ref={emailRef}
+          />
+          <textarea
+            name="message"
+            placeholder={'내용을 입력해주세요'}
+            ref={contentRef}
+          />
+          <button className="submit-btn">
+            <input type="submit" value="전송하기" />
+            {/*<span>전송하기</span>*/}
+          </button>
         </form>
         <Link href={'/'} css={ButtonCSS}>
           홈으로
@@ -107,6 +147,24 @@ const ContactPage: NextPage = () => {
           </div>
         </Link>
       </div>
+
+      {isMounted && isLoading ? (
+        createPortal(
+          <div css={OverlayCSS}>
+            <div className="spinner">
+              <Image
+                src={'/icons/spinner.svg'}
+                alt={'loading image'}
+                width={50}
+                height={50}
+              />
+            </div>
+          </div>,
+          document.getElementById('overlay')!
+        )
+      ) : (
+        <></>
+      )}
     </div>
   )
 }
@@ -146,7 +204,7 @@ const FormCSS = (theme: Theme) => css`
   width: 100%;
   margin-top: ${theme.spacings.m}px;
 
-  input,
+  input:not([type='submit']),
   textarea {
     display: block;
     width: 90%;
@@ -181,12 +239,13 @@ const FormCSS = (theme: Theme) => css`
     border: solid 2px ${theme.colors.gray700};
     border-radius: 3px;
 
-    span {
+    input {
       position: relative;
       font-size: ${theme.fontSizes.xs};
       font-weight: 500;
       letter-spacing: -0.3px;
       color: ${theme.colors.white};
+      background-color: transparent;
       z-index: 2;
       transition: all 0.2s;
     }
@@ -206,7 +265,7 @@ const FormCSS = (theme: Theme) => css`
 
     &:hover {
       border-color: ${theme.colors.gray100};
-      span {
+      input {
         color: ${theme.colors.black};
         font-weight: ${theme.fontWeights.bold};
       }
@@ -214,6 +273,37 @@ const FormCSS = (theme: Theme) => css`
       &:before {
         width: 100%;
       }
+    }
+  }
+`
+
+const OverlayCSS = (theme: Theme) => css`
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 99;
+  background-color: rgba(0, 0, 0, 0.8);
+
+  .spinner {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    margin-left: -30px;
+    margin-top: -30px;
+    animation: spin 2.5s infinite;
+    -webkit-animation-timing-function: cubic-bezier(0.55, 0.15, 0.45, 0.85);
+    animation-timing-function: cubic-bezier(0.55, 0.15, 0.45, 0.85);
+  }
+
+  @keyframes spin {
+    0%,
+    100% {
+      transform: rotate(0deg) scale(1);
+    }
+    50% {
+      transform: rotate(900deg) scale(0.8);
     }
   }
 `

@@ -1,11 +1,11 @@
 import * as React from 'react'
-import { Fragment, useEffect, useRef, useState } from 'react'
+import { Fragment, useRef, useState } from 'react'
 import { createPortal } from 'react-dom'
 import { NextPage } from 'next'
 import Link from 'next/link'
 import Image from '@/components/common/Image'
 
-import gsap from 'gsap-trial'
+import gsap from 'gsap'
 import { useGSAP } from '@gsap/react'
 import { css, Theme } from '@emotion/react'
 import { ButtonCSS, ContainerCSS, TRef } from './index'
