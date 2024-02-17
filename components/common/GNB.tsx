@@ -4,7 +4,8 @@ import Link from 'next/link'
 import Image from 'next/image'
 
 import { useThemeStore } from '@/lib/store'
-import dragon from '@/public/icons/dragon.svg'
+import logoLight from '@/public/icons/logo.svg'
+import logoDark from '@/public/icons/logo_white.svg'
 import { css, Theme } from '@emotion/react'
 import { MobileStyle } from '@/styles/mediaQuery'
 
@@ -17,7 +18,11 @@ const GNB = () => {
   return (
     <div className={'gnb'} css={GnbCSS}>
       <Link href={'/'} className="logo-area">
-        <Image src={dragon} alt={'dragon image'} />
+        {theme === 'dark' ? (
+          <Image src={logoLight} alt={'logo image'} />
+        ) : (
+          <Image src={logoDark} alt={'logo image'} />
+        )}
       </Link>
       <div className="menu">
         <Link href={'/projects'}>Projects</Link>

@@ -2,7 +2,6 @@
 const nextConfig = {
   reactStrictMode: true,
   distDir: 'dist',
-  assetPrefix: 'https://pftrobot.github.io/pftrobot',
   images: {
     loader: 'imgix',
     path: '/',
