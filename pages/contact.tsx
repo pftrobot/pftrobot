@@ -16,13 +16,9 @@ import { lockScroll, unlockScroll, useMounted } from '@/lib/utils'
 import { useThemeStore } from '@/lib/store'
 import Image from '@/components/common/Image'
 
-type TRef = MutableRefObject<any>
+const isProd = process.env.NODE_ENV === 'production'
 
-interface IMail {
-  name: string
-  email: string
-  message: string
-}
+type TRef = MutableRefObject<any>
 
 const ContactPage: NextPage = () => {
   const { theme } = useThemeStore()
@@ -153,7 +149,11 @@ const ContactPage: NextPage = () => {
           <div css={OverlayCSS}>
             <div className="spinner">
               <Image
-                src={'/icons/spinner.svg'}
+                src={
+                  isProd
+                    ? '/pftrobot' + '/icons/spinner.svg'
+                    : '/icons/spinner.svg'
+                }
                 alt={'loading image'}
                 width={50}
                 height={50}
