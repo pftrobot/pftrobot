@@ -29,22 +29,22 @@ const App: NextComponentType<AppContext, AppInitialProps, CustomAppProps> = ({
           name="viewport"
           content="width=device-width, initial-scale=1, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0"
         />
-        <link rel="icon" href="/favicon.ico" />
+        <link rel="icon" href="/pftrobot/favicon/favicon.ico" />
         <link
           rel="icon"
           type="image/png"
           sizes="32x32"
-          href="/favicon/favicon.png"
+          href="/pftrobot/favicon/favicon.png"
         />
         <link
           rel="icon"
           type="image/png"
           sizes="16x16"
-          href="/favicon/favicon.png"
+          href="/pftrobot/favicon/favicon.png"
         />
         <meta name="theme-color" content="#111" />
         <meta name="description" content="write descriptions here" />
-        <meta name="og:image" content="/favicon/favicon.png" />
+        <meta name="og:image" content="/pftrobot/favicon/favicon.png" />
         <title>포트폴리오</title>
       </Head>
       <ThemeProvider theme={theme === 'dark' ? themeDark : themeLight}>
