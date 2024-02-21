@@ -9,7 +9,7 @@ import logoDark from '@/public/icons/logo_white.svg'
 import { css, Theme } from '@emotion/react'
 import { MobileStyle } from '@/styles/mediaQuery'
 
-const GNB = () => {
+const GNB: React.FC = () => {
   const { theme, setTheme } = useThemeStore()
   useEffect(() => {
     setTheme(window.__darkMode__ ? 'dark' : 'light')

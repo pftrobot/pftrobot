@@ -14,6 +14,7 @@
     "@emotion/react": "^11.11.3",
     "@gsap/react": "^2.1.0",
     "@gsap/simply": "^3.12.5",
+    "@u-wave/react-vimeo": "0.9.10",
     "gsap": "npm:@gsap/simply",
     "gsap-trial": "^3.12.5",
     "next": "13.5.2",

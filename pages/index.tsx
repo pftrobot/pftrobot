@@ -1,6 +1,5 @@
-import Head from 'next/head'
 import * as React from 'react'
-import { MutableRefObject, useEffect, useRef, useState } from 'react'
+import { MutableRefObject, useRef } from 'react'
 import { NextPage } from 'next'
 import Link from 'next/link'
 
@@ -13,8 +12,6 @@ import Intro from '@/components/intro'
 import { useThemeStore } from '@/lib/store'
 
 export type TRef = MutableRefObject<any>
-
-const isProd = process.env.NODE_ENV === 'production'
 
 const HomePage: NextPage = () => {
   const { theme } = useThemeStore()
@@ -66,7 +63,7 @@ const HomePage: NextPage = () => {
           css={ButtonCSS}
           ref={refButton}
         >
-          궁금하면 눌러주세요
+          궁금하다면 눌러주세요
           <div className="svg-box">
             <svg
               version="1.0"

@@ -8,6 +8,7 @@ import Image from '@/components/common/Image'
 import gsap from 'gsap'
 import { useGSAP } from '@gsap/react'
 import { css, Theme } from '@emotion/react'
+import Vimeo from '@u-wave/react-vimeo'
 import { ButtonCSS, ContainerCSS, TRef } from './index'
 import { MobileStyle } from '@/styles/mediaQuery'
 
@@ -19,6 +20,7 @@ const isProd = process.env.NODE_ENV === 'production'
 interface IMedia {
   type: string
   source: string
+  ratio?: string
 }
 
 interface IProject {
@@ -69,7 +71,8 @@ const ProjectPage: NextPage = () => {
         },
         {
           type: 'video',
-          source: '/videos/solvook_search.mp4',
+          ratio: '65.03',
+          source: '914699761',
         },
       ],
       url: 'https://www.solvook.com',
@@ -96,8 +99,9 @@ const ProjectPage: NextPage = () => {
           source: '/assets/actionman.jpg',
         },
         {
+          ratio: '50.42',
           type: 'video',
-          source: '/videos/nalbi_actionman.mp4',
+          source: '914699666',
         },
       ],
       url: 'https://www.actionman.ai/',
@@ -110,7 +114,8 @@ const ProjectPage: NextPage = () => {
       media: [
         {
           type: 'video',
-          source: '/videos/solvook_note.mp4',
+          ratio: '87.21',
+          source: '914699740',
         },
       ],
     },
@@ -135,7 +140,8 @@ const ProjectPage: NextPage = () => {
         },
         {
           type: 'video',
-          source: '/videos/solvook_dashboard.mp4',
+          ratio: '62.5',
+          source: '914699708',
         },
       ],
       url: 'https://dashboard.solvook.com/',
@@ -150,11 +156,13 @@ const ProjectPage: NextPage = () => {
       media: [
         {
           type: 'video',
-          source: '/videos/does_galaxy-metabus.mp4',
+          ratio: '179.17',
+          source: '914699457',
         },
         {
           type: 'video',
-          source: '/videos/does_galaxy-metabus2.mp4',
+          ratio: '179.17',
+          source: '914699486',
         },
       ],
     },
@@ -168,7 +176,8 @@ const ProjectPage: NextPage = () => {
       media: [
         {
           type: 'video',
-          source: '/videos/does_hankooktire.mp4',
+          ratio: '54.61',
+          source: '914699511',
         },
       ],
       url: 'https://www.hankooktire.com/global/ko/tires/ventus.html',
@@ -198,12 +207,24 @@ const ProjectPage: NextPage = () => {
       media: [
         {
           type: 'video',
-          source: '/videos/does_skmagic.mp4',
+          ratio: '53.32',
+          source: '914699616',
         },
       ],
       url: 'https://company.skmagic.com/introduction/magicalwalk.do',
     },
   ]
+
+  const videoOptions = {
+    autoplay: true,
+    muted: true,
+    paused: false,
+    autopause: false,
+    showByline: false,
+    controls: false,
+    loop: true,
+    playsInline: false,
+  }
 
   useGSAP(
     () => {
@@ -309,16 +330,19 @@ const ProjectPage: NextPage = () => {
               >
                 <div className="media">
                   {firstMedia.type === 'video' ? (
-                    <video muted autoPlay loop>
-                      <source
-                        src={
-                          isProd
-                            ? '/pftrobot' + firstMedia.source
-                            : firstMedia.source
-                        }
-                        type={'video/mp4'}
-                      />
-                    </video>
+                    <div className={'player-box'}>
+                      <div
+                        className="embed-container"
+                        style={{
+                          padding: `${firstMedia.ratio ? firstMedia.ratio : '50'}% 0 0`,
+                        }}
+                      >
+                        <Vimeo
+                          video={`https://player.vimeo.com/video/${firstMedia.source}?h=41e251e138&autoplay=1&loop=1&title=0&byline=0&portrait=0`}
+                          {...videoOptions}
+                        />
+                      </div>
+                    </div>
                   ) : (
                     <Image
                       src={
@@ -403,16 +427,19 @@ const ProjectPage: NextPage = () => {
                             key={`current-item_media_${currentProject.title}_${currentMediaIdx}`}
                           >
                             {currentMedia.type === 'video' ? (
-                              <video muted autoPlay loop>
-                                <source
-                                  src={
-                                    isProd
-                                      ? '/pftrobot' + currentMedia.source
-                                      : currentMedia.source
-                                  }
-                                  type={'video/mp4'}
-                                />
-                              </video>
+                              <div className={'player-box'}>
+                                <div
+                                  className="embed-container"
+                                  style={{
+                                    padding: `${currentMedia.ratio ? currentMedia.ratio : '50'}% 0 0`,
+                                  }}
+                                >
+                                  <Vimeo
+                                    video={`https://player.vimeo.com/video/${currentMedia.source}?h=41e251e138&autoplay=1&loop=1&title=0&byline=0&portrait=0`}
+                                    {...videoOptions}
+                                  />
+                                </div>
+                              </div>
                             ) : (
                               <Image
                                 src={
@@ -518,6 +545,7 @@ const ListCSS = (theme: Theme) => css`
     position: relative;
     margin-bottom: ${theme.spacings.m}px;
     border-radius: 8px;
+    border: solid 1px ${theme.colors.gray800};
 
     &:before {
       display: block;
@@ -553,7 +581,29 @@ const ListCSS = (theme: Theme) => css`
 
     .media {
       img {
+        display: block;
         height: auto;
+      }
+      .player-box {
+        max-height: 600px;
+
+        .embed-container {
+          overflow: hidden;
+          position: relative;
+          height: 0;
+          max-width: 100%;
+
+          & > div,
+          iframe,
+          object,
+          embed {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+          }
+        }
       }
       video {
         width: 100%;
@@ -764,15 +814,14 @@ const OverlayCSS = (theme: Theme) => css`
       gap: ${theme.spacings.xxs}px;
       margin-top: ${theme.spacings.m}px;
 
-      img,
-      video {
+      img {
         overflow: hidden;
         width: auto;
         height: auto;
         max-width: 100%;
         max-height: 500px;
         margin: 0 auto;
-        border: solid 1px ${theme.colors.gray780};
+        border: solid 1px ${theme.colors.gray800};
         border-radius: 8px;
 
         ${MobileStyle(
@@ -780,6 +829,40 @@ const OverlayCSS = (theme: Theme) => css`
             max-height: 360px;
           `)
         )}
+      }
+
+      .player-box {
+        overflow: hidden;
+        width: 100%;
+        height: auto;
+        max-height: 1000px;
+        margin: 0 auto;
+        border: solid 1px ${theme.colors.gray800};
+        border-radius: 8px;
+
+        ${MobileStyle(
+          css(`
+            max-height: 360px;
+          `)
+        )}
+
+        .embed-container {
+          overflow: hidden;
+          position: relative;
+          height: 0;
+          max-width: 100%;
+
+          & > div,
+          iframe,
+          object,
+          embed {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+          }
+        }
       }
     }
 

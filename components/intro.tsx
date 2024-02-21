@@ -1,22 +1,16 @@
 import * as React from 'react'
-import { NextPage } from 'next'
 import { useRef, useState } from 'react'
 
 import { useGSAP } from '@gsap/react'
 import gsap from 'gsap'
 import { DrawSVGPlugin } from 'gsap/dist/DrawSVGPlugin'
-import { css, Theme } from '@emotion/react'
+import { css } from '@emotion/react'
 import { breakPoints, MobileStyle } from '@/styles/mediaQuery'
 import { TRef } from '@/pages'
 
-const Intro: NextPage = () => {
+const Intro: React.FC = () => {
   const [introElem, setIntroElem] = useState(true)
-  const refContent: TRef = useRef()
-  const refGNB: TRef = useRef()
   const refIntro: TRef = useRef()
-  const refTitle: TRef = useRef()
-  const refDesc: TRef = useRef()
-  const refButton: TRef = useRef()
   const refBlink: TRef = useRef()
   const refEye: TRef = useRef()
   const refDragon: TRef = useRef()
@@ -124,9 +118,9 @@ const Intro: NextPage = () => {
       )
       .to(refBlink.current, { duration: 0.2, delay: 3, alpha: 0 }, 1.8)
 
-    refList.forEach((items, listIdx) => {
+    refList.forEach((items) => {
       // ex) items : [ref1_1, ref1_2]
-      items.forEach((item, itemIdx) => {
+      items.forEach((item) => {
         // ex) item : ref1_1
         t1.set(item.current, { drawSVG: 0 })
       })
@@ -522,7 +516,7 @@ const Intro: NextPage = () => {
 
 export default Intro
 
-const IntroCSS = (theme: Theme) => css`
+const IntroCSS = () => css`
   .blink {
     position: absolute;
     top: 50%;
