@@ -50,7 +50,7 @@ const HomePage: NextPage = () => {
     else if (currentHour >= 6 && currentHour < 19) dropLength = 6
     else dropLength = 12
 
-    const items = [...Array(dropLength)].map((x) => 0)
+    const items = [...Array(dropLength)].map(() => 0)
 
     return items.map((item, itemIdx) => (
       <div
