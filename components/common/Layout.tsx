@@ -1,4 +1,4 @@
-import { ReactNode, useEffect, useState } from 'react'
+import { ReactNode } from 'react'
 
 import { css, Theme } from '@emotion/react'
 import GNB from '@/components/common/GNB'

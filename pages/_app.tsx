@@ -45,7 +45,7 @@ const App: NextComponentType<AppContext, AppInitialProps, CustomAppProps> = ({
         <meta name="theme-color" content="#111" />
         <meta name="description" content="write descriptions here" />
         <meta name="og:image" content="/pftrobot/favicon/favicon.png" />
-        <title>포트폴리오</title>
+        <title>오이슬</title>
       </Head>
       <ThemeProvider theme={theme === 'dark' ? themeDark : themeLight}>
         {globalStyles}

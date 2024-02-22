@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { FormEvent, MutableRefObject, useEffect, useRef, useState } from 'react'
+import { FormEvent, useRef, useState } from 'react'
 import { createPortal } from 'react-dom'
 import { NextPage } from 'next'
 import Link from 'next/link'
@@ -10,7 +10,6 @@ import emailjs from '@emailjs/browser'
 import { css, Theme } from '@emotion/react'
 import { ButtonCSS, ContainerCSS } from './index'
 import { SubContentCSS } from './projects'
-import { MobileStyle } from '@/styles/mediaQuery'
 
 import { lockScroll, unlockScroll, useMounted } from '@/lib/utils'
 import { useThemeStore } from '@/lib/store'
@@ -18,17 +17,15 @@ import Image from '@/components/common/Image'
 
 const isProd = process.env.NODE_ENV === 'production'
 
-type TRef = MutableRefObject<any>
-
 const ContactPage: NextPage = () => {
   const { theme } = useThemeStore()
   const isMounted = useMounted()
-  const [isLoading, setIsLoading] = useState(false)
-  const refContent: TRef = useRef()
-  const form: TRef = useRef()
-  const nameRef: TRef = useRef()
-  const emailRef: TRef = useRef()
-  const contentRef: TRef = useRef()
+  const [isLoading, setIsLoading] = useState<boolean>(false)
+  const refContents = useRef<HTMLDivElement>(null)
+  const refForm = useRef<HTMLFormElement>(null)
+  const refName = useRef<HTMLInputElement>(null)
+  const refEmail = useRef<HTMLInputElement>(null)
+  const refContent = useRef<HTMLTextAreaElement>(null)
 
   const showLoading = () => {
     lockScroll()
@@ -43,9 +40,19 @@ const ContactPage: NextPage = () => {
     e.preventDefault()
 
     if (
-      nameRef.current.value === '' ||
-      emailRef.current.value === '' ||
-      contentRef.current.value === ''
+      !(
+        refForm.current &&
+        refName.current &&
+        refEmail.current &&
+        refContent.current
+      )
+    )
+      return
+
+    if (
+      refName.current.value === '' ||
+      refEmail.current.value === '' ||
+      refContent.current.value === ''
     ) {
       alert('내용을 모두 입력해주세요.')
     } else {
@@ -54,61 +61,74 @@ const ContactPage: NextPage = () => {
         .sendForm(
           'service_3kxyi38',
           'template_8xuweqg',
-          form.current,
+          refForm.current,
           'eBY8yf0yt5DdtqvhP'
         )
         .then(
-          (result) => {
+          () => {
             hideLoading()
             alert('메일을 성공적으로 전송했어요. 감사합니다.')
-            nameRef.current.value = ''
-            emailRef.current.value = ''
-            contentRef.current.value = ''
+            if (refName.current && refEmail.current && refContent.current) {
+              refName.current.value = ''
+              refEmail.current.value = ''
+              refContent.current.value = ''
+            }
           },
           (error) => {
             alert('메일 전송에 실패했어요. 잠시 후 다시 시도해주세요.')
+            console.log(error)
           }
         )
     }
   }
 
+  const handleCopyBtn = (text: string) => {
+    window.navigator.clipboard.writeText(text)
+    alert('텍스트가 복사되었습니다.')
+  }
+
   useGSAP(() => {
     const t0 = gsap.timeline()
 
-    t0.set(refContent.current, {
+    t0.set(refContents.current, {
       alpha: 0,
     })
 
-    t0.to(refContent.current, {
+    t0.to(refContents.current, {
       duration: 0.8,
       alpha: 1,
     })
   })
 
   return (
-    <div css={ContainerCSS} ref={refContent}>
+    <div css={ContainerCSS} ref={refContents}>
       <div css={SubContentCSS}>
         <p className="title">Contact</p>
         <p className="desc">
           아래 형식으로 문의하거나 <span>pftrobot@gmail.com</span>{' '}
-          {/*<button css={CopyBtnCSS}>COPY</button>*/}로 이메일을 보내주세요
+          <button
+            onClick={() => handleCopyBtn('pftrobot@gmail.com')}
+            css={CopyBtnCSS}
+          >
+            COPY
+          </button>{' '}
+          로 이메일을 보내주세요
         </p>
-        <form ref={form} onSubmit={sendEmail} css={FormCSS}>
-          <input type="text" name="name" placeholder={'이름'} ref={nameRef} />
+        <form ref={refForm} onSubmit={sendEmail} css={FormCSS}>
+          <input type="text" name="name" placeholder={'이름'} ref={refName} />
           <input
             type="email"
             name="email"
             placeholder={'메일 주소'}
-            ref={emailRef}
+            ref={refEmail}
           />
           <textarea
             name="message"
             placeholder={'내용을 입력해주세요'}
-            ref={contentRef}
+            ref={refContent}
           />
           <button className="submit-btn">
             <input type="submit" value="전송하기" />
-            {/*<span>전송하기</span>*/}
           </button>
         </form>
         <Link href={'/'} css={ButtonCSS}>
@@ -277,7 +297,7 @@ const FormCSS = (theme: Theme) => css`
   }
 `
 
-const OverlayCSS = (theme: Theme) => css`
+const OverlayCSS = () => css`
   position: fixed;
   top: 0;
   left: 0;
