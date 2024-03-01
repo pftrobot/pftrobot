@@ -26,9 +26,3 @@ export const unlockScroll = () => {
   document.body.style.right = ''
   window.scrollTo(0, parseInt(scrollY || '0') * -1)
 }
-
-type TRandomNumber = (min: number, max: number) => number
-
-export const randomNumber: TRandomNumber = (min, max) => {
-  return Math.floor(Math.random() * (max - min + 1)) + min
-}

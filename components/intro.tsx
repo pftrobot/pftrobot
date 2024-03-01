@@ -1,34 +1,42 @@
-import * as React from 'react'
+import { NextPage } from 'next'
 import { useRef, useState } from 'react'
-
 import { useGSAP } from '@gsap/react'
+// import gsap from 'gsap-trial'
 import gsap from 'gsap'
 import { DrawSVGPlugin } from 'gsap/dist/DrawSVGPlugin'
-import { css } from '@emotion/react'
+// import DrawSVGPlugin from 'gsap-trial/dist/DrawSVGPlugin'
+import { TRef } from '@/pages'
+import * as React from 'react'
+import { css, Theme } from '@emotion/react'
 import { breakPoints, MobileStyle } from '@/styles/mediaQuery'
 
-const Intro: React.FC = () => {
-  const [introElem, setIntroElem] = useState<boolean>(true)
-  const refIntro = useRef<HTMLDivElement>(null)
-  const refBlink = useRef<HTMLDivElement>(null)
-  const refEye = useRef<HTMLDivElement>(null)
-  const refDragon = useRef<SVGSVGElement>(null)
-  const ref1_1 = useRef<SVGPathElement>(null)
-  const ref1_2 = useRef<SVGPathElement>(null)
-  const ref2_1 = useRef<SVGPathElement>(null)
-  const ref2_2 = useRef<SVGPathElement>(null)
-  const ref2_3 = useRef<SVGPathElement>(null)
-  const ref2_4 = useRef<SVGPathElement>(null)
-  const ref3_1 = useRef<SVGPathElement>(null)
-  const ref3_2 = useRef<SVGPathElement>(null)
-  const ref3_3 = useRef<SVGPathElement>(null)
-  const ref3_4 = useRef<SVGPathElement>(null)
-  const ref3_5 = useRef<SVGPathElement>(null)
-  const ref3_6 = useRef<SVGPathElement>(null)
-  const ref3_7 = useRef<SVGPathElement>(null)
-  const ref4_1 = useRef<SVGPathElement>(null)
-  const ref4_2 = useRef<SVGPathElement>(null)
-  const ref4_3 = useRef<SVGPathElement>(null)
+const Intro: NextPage = () => {
+  const [introElem, setIntroElem] = useState(true)
+  const refContent: TRef = useRef()
+  const refGNB: TRef = useRef()
+  const refIntro: TRef = useRef()
+  const refTitle: TRef = useRef()
+  const refDesc: TRef = useRef()
+  const refButton: TRef = useRef()
+  const refBlink: TRef = useRef()
+  const refEye: TRef = useRef()
+  const refDragon: TRef = useRef()
+  const ref1_1: TRef = useRef()
+  const ref1_2: TRef = useRef()
+  const ref2_1: TRef = useRef()
+  const ref2_2: TRef = useRef()
+  const ref2_3: TRef = useRef()
+  const ref2_4: TRef = useRef()
+  const ref3_1: TRef = useRef()
+  const ref3_2: TRef = useRef()
+  const ref3_3: TRef = useRef()
+  const ref3_4: TRef = useRef()
+  const ref3_5: TRef = useRef()
+  const ref3_6: TRef = useRef()
+  const ref3_7: TRef = useRef()
+  const ref4_1: TRef = useRef()
+  const ref4_2: TRef = useRef()
+  const ref4_3: TRef = useRef()
   const refList = [
     [ref1_1, ref1_2],
     [ref2_1, ref2_2, ref2_3, ref2_4],
@@ -117,9 +125,9 @@ const Intro: React.FC = () => {
       )
       .to(refBlink.current, { duration: 0.2, delay: 3, alpha: 0 }, 1.8)
 
-    refList.forEach((items) => {
+    refList.forEach((items, listIdx) => {
       // ex) items : [ref1_1, ref1_2]
-      items.forEach((item) => {
+      items.forEach((item, itemIdx) => {
         // ex) item : ref1_1
         t1.set(item.current, { drawSVG: 0 })
       })
@@ -515,7 +523,7 @@ const Intro: React.FC = () => {
 
 export default Intro
 
-const IntroCSS = () => css`
+const IntroCSS = (theme: Theme) => css`
   .blink {
     position: absolute;
     top: 50%;
@@ -534,6 +542,12 @@ const IntroCSS = () => css`
       margin: 0 auto;
       border-top-left-radius: 60%;
       border-top-right-radius: 0;
+      ${MobileStyle(
+        css(`
+            // max-width: 100px; 
+            // border-top-left-radius: 30%;
+        `)
+      )}
 
       .eye {
         width: 100%;
@@ -544,12 +558,25 @@ const IntroCSS = () => css`
         border-bottom-right-radius: 120%;
         top: -50px;
         border-bottom: 8px inset #000;
+        ${MobileStyle(
+          css(` 
+              // border-bottom-left-radius: 40%;
+              // border-bottom-right-radius: 60%;
+          `)
+        )}
       }
 
       .iris {
         width: 50%;
         max-width: 300px;
         height: 300px;
+
+        ${MobileStyle(
+          css(`
+            // max-width: 150px;
+            // height: 150px; 
+          `)
+        )}
 
         &:before {
           content: '';
@@ -564,6 +591,14 @@ const IntroCSS = () => css`
           border-top-right-radius: 10%;
           border-bottom-left-radius: 40%;
           border-bottom-right-radius: 80%;
+          ${MobileStyle(
+            css(` 
+              // border-top-left-radius: 5%;
+              // border-top-right-radius: 5%;
+              // border-bottom-left-radius: 20%;
+              // border-bottom-right-radius: 40%;
+          `)
+          )}
         }
 
         &:after {

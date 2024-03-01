@@ -1,4 +1,4 @@
-import { create } from 'zustand'
+import { create, useStore } from 'zustand'
 
 export type ThemeType = 'dark' | 'light'
 

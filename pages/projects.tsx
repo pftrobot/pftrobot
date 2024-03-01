@@ -1,15 +1,15 @@
 import * as React from 'react'
-import { Fragment, useRef, useState } from 'react'
+import { Fragment, useEffect, useRef, useState } from 'react'
 import { createPortal } from 'react-dom'
 import { NextPage } from 'next'
 import Link from 'next/link'
 import Image from '@/components/common/Image'
 
-import gsap from 'gsap'
+import gsap from 'gsap-trial'
 import { useGSAP } from '@gsap/react'
 import { css, Theme } from '@emotion/react'
 import Vimeo from '@u-wave/react-vimeo'
-import { ButtonCSS, ContainerCSS } from './index'
+import { ButtonCSS, ContainerCSS, TRef } from './index'
 import { MobileStyle } from '@/styles/mediaQuery'
 
 import { lockScroll, unlockScroll, useMounted } from '@/lib/utils'
@@ -33,16 +33,19 @@ interface IProject {
   url?: string
 }
 
+type TClickAnimation = (isOpen?: boolean) => void
+type TOpenModal = (target: IProject) => void
+
 const ProjectPage: NextPage = () => {
   const { theme } = useThemeStore()
   const isMounted = useMounted()
   const [currentProject, setCurrentProject] = useState<IProject | null>(null)
-  const refContent = useRef<HTMLDivElement>(null)
-  const refTitle = useRef<HTMLParagraphElement>(null)
-  const refList = useRef<HTMLDivElement>(null)
-  const refButton = useRef<HTMLAnchorElement>(null)
-  const refModalWrap = useRef<HTMLDivElement>(null)
-  const refModal = useRef<HTMLDivElement>(null)
+  const refContent: TRef = useRef()
+  const refTitle: TRef = useRef()
+  const refList: TRef = useRef()
+  const refButton: TRef = useRef()
+  const refModalWrap: TRef = useRef()
+  const refModal: TRef = useRef()
   const projectList: IProject[] = [
     {
       title: 'Solvook',
@@ -223,34 +226,6 @@ const ProjectPage: NextPage = () => {
     playsInline: false,
   }
 
-  const clickAnimation = (isOpen?: boolean) => {
-    if (isOpen) {
-      gsap.to(refModalWrap.current, {
-        duration: 0.3,
-        visibility: 'visible',
-        alpha: 1,
-      })
-      gsap.to(refModal.current, { duration: 0.3, x: 0 })
-      if (refModal?.current?.scrollTop) refModal.current.scrollTop = 0
-    } else {
-      const t0 = gsap.timeline()
-      t0.to(refModal.current, { duration: 0.3, x: '100%' }, 0)
-        .to(refModalWrap.current, { duration: 0.3, alpha: 0 }, 0)
-        .to(refModalWrap.current, { duration: 0.3, visibility: 'hidden' }, 0.2)
-    }
-  }
-
-  const openModal = (target: IProject) => {
-    if (currentProject !== target) setCurrentProject(target)
-    lockScroll()
-    clickAnimation(true)
-  }
-
-  const closeModal = () => {
-    unlockScroll()
-    clickAnimation(false)
-  }
-
   useGSAP(
     () => {
       if (isMounted) {
@@ -260,6 +235,22 @@ const ProjectPage: NextPage = () => {
     },
     { dependencies: [isMounted], scope: refModalWrap }
   )
+
+  const clickAnimation: TClickAnimation = (isOpen) => {
+    if (isOpen) {
+      gsap.to(refModalWrap.current, {
+        duration: 0.3,
+        visibility: 'visible',
+        alpha: 1,
+      })
+      gsap.to(refModal.current, { duration: 0.3, x: 0 })
+    } else {
+      const t0 = gsap.timeline()
+      t0.to(refModal.current, { duration: 0.3, x: '100%' }, 0)
+        .to(refModalWrap.current, { duration: 0.3, alpha: 0 }, 0)
+        .to(refModalWrap.current, { duration: 0.3, visibility: 'hidden' }, 0.2)
+    }
+  }
 
   useGSAP(() => {
     const t0 = gsap.timeline()
@@ -310,6 +301,17 @@ const ProjectPage: NextPage = () => {
       )
   })
 
+  const openModal: TOpenModal = (target) => {
+    if (currentProject !== target) setCurrentProject(target)
+    lockScroll()
+    clickAnimation(true)
+  }
+
+  const closeModal = () => {
+    unlockScroll()
+    clickAnimation(false)
+  }
+
   return (
     <div css={ContainerCSS} ref={refContent}>
       <div css={SubContentCSS}>
@@ -321,13 +323,54 @@ const ProjectPage: NextPage = () => {
             const firstMedia = projectItem.media[0]
 
             return (
-              <ProjectItem
-                item={projectItem}
-                thumbnailSource={firstMedia}
-                handleClick={openModal}
-                videoOption={videoOptions}
+              <div
+                className="item"
+                onClick={() => openModal(projectItem)}
                 key={`project-item_${projectIdx}`}
-              />
+              >
+                <div className="media">
+                  {firstMedia.type === 'video' ? (
+                    <div className={'player-box'}>
+                      <div
+                        className="embed-container"
+                        style={{
+                          padding: `${firstMedia.ratio ? firstMedia.ratio : '50'}% 0 0`,
+                        }}
+                      >
+                        <Vimeo
+                          video={`https://player.vimeo.com/video/${firstMedia.source}?h=41e251e138&autoplay=1&loop=1&title=0&byline=0&portrait=0`}
+                          {...videoOptions}
+                        />
+                      </div>
+                    </div>
+                  ) : (
+                    <Image
+                      src={
+                        isProd
+                          ? '/pftrobot' + firstMedia.source
+                          : firstMedia.source
+                      }
+                      alt={'item image'}
+                      width={500}
+                      height={500}
+                    />
+                  )}
+                </div>
+                <div className="floating-area">
+                  <p className="title">{projectItem.title}</p>
+                  <p className="desc">{projectItem.summary}</p>
+                  <div className="tech" css={TechBoxCSS}>
+                    {projectItem.tech.map((techItem, techIdx) => {
+                      if (techIdx > 3) return
+                      return (
+                        <span key={`current-item_tech_${techIdx}`}>
+                          {techItem}
+                        </span>
+                      )
+                    })}
+                  </div>
+                </div>
+              </div>
             )
           })}
         </div>
@@ -447,63 +490,6 @@ const ProjectPage: NextPage = () => {
       ) : (
         <></>
       )}
-    </div>
-  )
-}
-
-interface ProjectItemProps {
-  item: IProject
-  thumbnailSource: IMedia
-  handleClick: (target: IProject) => void
-  videoOption: {}
-}
-const ProjectItem = ({
-  item,
-  thumbnailSource,
-  handleClick,
-  videoOption,
-}: ProjectItemProps) => {
-  return (
-    <div className="item" onClick={() => handleClick(item)}>
-      <div className="media">
-        {thumbnailSource.type === 'video' ? (
-          <div className={'player-box'}>
-            <div
-              className="embed-container"
-              style={{
-                padding: `${thumbnailSource.ratio ? thumbnailSource.ratio : '50'}% 0 0`,
-              }}
-            >
-              <Vimeo
-                // video={`https://player.vimeo.com/video/${thumbnailSource.source}?h=41e251e138&autoplay=1&loop=1&title=0&byline=0&portrait=0`}
-                video={`https://player.vimeo.com/video/${thumbnailSource.source}?h=41e251e138&autoplay=1&loop=1&title=0&byline=0&portrait=0`}
-                {...videoOption}
-              />
-            </div>
-          </div>
-        ) : (
-          <Image
-            src={
-              isProd
-                ? '/pftrobot' + thumbnailSource.source
-                : thumbnailSource.source
-            }
-            alt={'item image'}
-            width={500}
-            height={500}
-          />
-        )}
-      </div>
-      <div className="floating-area">
-        <p className="title">{item.title}</p>
-        <p className="desc">{item.summary}</p>
-        <div className="tech" css={TechBoxCSS}>
-          {item.tech.map((techItem, techIdx) => {
-            if (techIdx > 3) return
-            return <span key={`current-item_tech_${techIdx}`}>{techItem}</span>
-          })}
-        </div>
-      </div>
     </div>
   )
 }
@@ -912,7 +898,7 @@ const OverlayCSS = (theme: Theme) => css`
           css(`
           width: 14px;
           height: 14px;
-          margin-top: -${theme.spacings.xxxxxs}px;
+        margin-top: -${theme.spacings.xxxxxs}px;
           background-size: 14px;
         `)
         )}
