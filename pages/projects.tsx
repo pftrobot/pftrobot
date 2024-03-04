@@ -5,7 +5,7 @@ import { NextPage } from 'next'
 import Link from 'next/link'
 import Image from '@/components/common/Image'
 
-import gsap from 'gsap-trial'
+import gsap from 'gsap'
 import { useGSAP } from '@gsap/react'
 import { css, Theme } from '@emotion/react'
 import Vimeo from '@u-wave/react-vimeo'
