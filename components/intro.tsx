@@ -1,42 +1,34 @@
-import { NextPage } from 'next'
+import * as React from 'react'
 import { useRef, useState } from 'react'
+
 import { useGSAP } from '@gsap/react'
-// import gsap from 'gsap-trial'
 import gsap from 'gsap'
 import { DrawSVGPlugin } from 'gsap/dist/DrawSVGPlugin'
-// import DrawSVGPlugin from 'gsap-trial/dist/DrawSVGPlugin'
-import { TRef } from '@/pages'
-import * as React from 'react'
-import { css, Theme } from '@emotion/react'
+import { css } from '@emotion/react'
 import { breakPoints, MobileStyle } from '@/styles/mediaQuery'
 
-const Intro: NextPage = () => {
-  const [introElem, setIntroElem] = useState(true)
-  const refContent: TRef = useRef()
-  const refGNB: TRef = useRef()
-  const refIntro: TRef = useRef()
-  const refTitle: TRef = useRef()
-  const refDesc: TRef = useRef()
-  const refButton: TRef = useRef()
-  const refBlink: TRef = useRef()
-  const refEye: TRef = useRef()
-  const refDragon: TRef = useRef()
-  const ref1_1: TRef = useRef()
-  const ref1_2: TRef = useRef()
-  const ref2_1: TRef = useRef()
-  const ref2_2: TRef = useRef()
-  const ref2_3: TRef = useRef()
-  const ref2_4: TRef = useRef()
-  const ref3_1: TRef = useRef()
-  const ref3_2: TRef = useRef()
-  const ref3_3: TRef = useRef()
-  const ref3_4: TRef = useRef()
-  const ref3_5: TRef = useRef()
-  const ref3_6: TRef = useRef()
-  const ref3_7: TRef = useRef()
-  const ref4_1: TRef = useRef()
-  const ref4_2: TRef = useRef()
-  const ref4_3: TRef = useRef()
+const Intro: React.FC = () => {
+  const [introElem, setIntroElem] = useState<boolean>(true)
+  const refIntro = useRef<HTMLDivElement>(null)
+  const refBlink = useRef<HTMLDivElement>(null)
+  const refEye = useRef<HTMLDivElement>(null)
+  const refDragon = useRef<SVGSVGElement>(null)
+  const ref1_1 = useRef<SVGPathElement>(null)
+  const ref1_2 = useRef<SVGPathElement>(null)
+  const ref2_1 = useRef<SVGPathElement>(null)
+  const ref2_2 = useRef<SVGPathElement>(null)
+  const ref2_3 = useRef<SVGPathElement>(null)
+  const ref2_4 = useRef<SVGPathElement>(null)
+  const ref3_1 = useRef<SVGPathElement>(null)
+  const ref3_2 = useRef<SVGPathElement>(null)
+  const ref3_3 = useRef<SVGPathElement>(null)
+  const ref3_4 = useRef<SVGPathElement>(null)
+  const ref3_5 = useRef<SVGPathElement>(null)
+  const ref3_6 = useRef<SVGPathElement>(null)
+  const ref3_7 = useRef<SVGPathElement>(null)
+  const ref4_1 = useRef<SVGPathElement>(null)
+  const ref4_2 = useRef<SVGPathElement>(null)
+  const ref4_3 = useRef<SVGPathElement>(null)
   const refList = [
     [ref1_1, ref1_2],
     [ref2_1, ref2_2, ref2_3, ref2_4],
@@ -55,6 +47,13 @@ const Intro: NextPage = () => {
     const drawOverlapTime = 0.08
     const drawDurationTime = 2.5
 
+    const drawOptions = {
+      duration: drawDurationTime,
+      delay: drawDelayTime,
+      drawSVG: '100%',
+      ease: 'expo.out',
+    }
+
     const t0 = gsap.timeline()
     const t1 = gsap.timeline()
 
@@ -71,7 +70,6 @@ const Intro: NextPage = () => {
     })
     t0.set(refEye.current, {
       scale: 0,
-      x: 0,
       y: '50px',
     })
     t0.set(refDragon.current, {
@@ -80,6 +78,15 @@ const Intro: NextPage = () => {
       y: 0,
     })
 
+    refList.forEach((items) => {
+      // ex) items : [ref1_1, ref1_2]
+      items.forEach((item) => {
+        // ex) item : ref1_1
+        t1.set(item.current, { drawSVG: 0 })
+      })
+    })
+
+    // blinking the eyes
     t0.to(
       refEye.current,
       {
@@ -125,165 +132,30 @@ const Intro: NextPage = () => {
       )
       .to(refBlink.current, { duration: 0.2, delay: 3, alpha: 0 }, 1.8)
 
-    refList.forEach((items, listIdx) => {
-      // ex) items : [ref1_1, ref1_2]
-      items.forEach((item, itemIdx) => {
-        // ex) item : ref1_1
-        t1.set(item.current, { drawSVG: 0 })
-      })
-    })
-    t1.to(
-      refList[0][0].current,
-      { duration: 1, delay: drawDelayTime, drawSVG: '100%', ease: 'expo.out' },
-      0
-    )
+    // drawing the svg lines
+    t1.to(refList[0][0].current, drawOptions, 0)
+      .to(refList[0][1].current, drawOptions, 0)
       .to(
-        refList[0][1].current,
+        refList[1].flatMap((row) => row.current),
         {
-          duration: 1,
-          delay: drawDelayTime,
-          drawSVG: '100%',
-          ease: 'expo.out',
-        },
-        0
-      )
-      .to(
-        refList[1][0].current,
-        {
-          duration: drawDurationTime,
+          ...drawOptions,
           delay: drawDelayTime + drawOverlapTime,
-          drawSVG: '100%',
-          ease: 'expo.out',
         },
         0.2
       )
       .to(
-        refList[1][1].current,
+        refList[2].flatMap((row) => row.current),
         {
-          duration: drawDurationTime,
-          delay: drawDelayTime + drawOverlapTime,
-          drawSVG: '100%',
-          ease: 'expo.out',
-        },
-        0.2
-      )
-      .to(
-        refList[1][2].current,
-        {
-          duration: drawDurationTime,
-          delay: drawDelayTime + drawOverlapTime,
-          drawSVG: '100%',
-          ease: 'expo.out',
-        },
-        0.2
-      )
-      .to(
-        refList[1][3].current,
-        {
-          duration: drawDurationTime,
-          delay: drawDelayTime + drawOverlapTime,
-          drawSVG: '100%',
-          ease: 'expo.out',
-        },
-        0.2
-      )
-      .to(
-        refList[2][0].current,
-        {
-          duration: drawDurationTime,
+          ...drawOptions,
           delay: drawDelayTime + drawOverlapTime * 2,
-          drawSVG: '100%',
-          ease: 'expo.out',
         },
         0.4
       )
       .to(
-        refList[2][1].current,
+        refList[3].flatMap((row) => row.current),
         {
-          duration: drawDurationTime,
-          delay: drawDelayTime + drawOverlapTime * 2,
-          drawSVG: '100%',
-          ease: 'expo.out',
-        },
-        0.4
-      )
-      .to(
-        refList[2][2].current,
-        {
-          duration: drawDurationTime,
-          delay: drawDelayTime + drawOverlapTime * 2,
-          drawSVG: '100%',
-          ease: 'expo.out',
-        },
-        0.4
-      )
-      .to(
-        refList[2][3].current,
-        {
-          duration: drawDurationTime,
-          delay: drawDelayTime + drawOverlapTime * 2,
-          drawSVG: '100%',
-          ease: 'expo.out',
-        },
-        0.4
-      )
-      .to(
-        refList[2][4].current,
-        {
-          duration: drawDurationTime,
-          delay: drawDelayTime + drawOverlapTime * 2,
-          drawSVG: '100%',
-          ease: 'expo.out',
-        },
-        0.4
-      )
-      .to(
-        refList[2][5].current,
-        {
-          duration: drawDurationTime,
-          delay: drawDelayTime + drawOverlapTime * 2,
-          drawSVG: '100%',
-          ease: 'expo.out',
-        },
-        0.4
-      )
-      .to(
-        refList[2][6].current,
-        {
-          duration: drawDurationTime,
-          delay: drawDelayTime + drawOverlapTime * 2,
-          drawSVG: '100%',
-          ease: 'expo.out',
-        },
-        0.4
-      )
-      .to(
-        refList[3][0].current,
-        {
-          duration: drawDurationTime,
+          ...drawOptions,
           delay: drawDelayTime + drawOverlapTime * 3,
-          drawSVG: '100%',
-          ease: 'expo.out',
-        },
-        0.6
-      )
-      .to(
-        refList[3][1].current,
-        {
-          duration: drawDurationTime,
-          delay: drawDelayTime + drawOverlapTime * 3,
-          drawSVG: '100%',
-          ease: 'expo.out',
-        },
-        0.6
-      )
-      .to(
-        refList[3][2].current,
-        {
-          duration: drawDurationTime,
-          delay: drawDelayTime + drawOverlapTime * 3,
-          drawSVG: '100%',
-          ease: 'expo.out',
         },
         0.6
       )
@@ -293,19 +165,21 @@ const Intro: NextPage = () => {
           duration: 1.5,
           delay: drawDelayTime + drawOverlapTime * 3 + 1.1,
           alpha: 0,
-          onComplete: () => removeItem(),
+          onComplete: removeItem,
         },
         1
       )
-      .to(
-        '.gnb',
-        {
-          duration: 0.8,
-          y: '0',
-          delay: drawDelayTime + drawOverlapTime * 3 + 1.1,
-        },
-        1.2
-      )
+
+    // show the contents
+    t1.to(
+      '.gnb',
+      {
+        duration: 0.8,
+        y: '0',
+        delay: drawDelayTime + drawOverlapTime * 3 + 1.1,
+      },
+      1.2
+    )
       .to(
         '.title',
         {
@@ -354,6 +228,7 @@ const Intro: NextPage = () => {
             viewBox="0 0 300 300"
             shapeRendering="geometricPrecision"
             textRendering="geometricPrecision"
+            className={'svg-box'}
             ref={refDragon}
           >
             <path
@@ -523,10 +398,10 @@ const Intro: NextPage = () => {
 
 export default Intro
 
-const IntroCSS = (theme: Theme) => css`
+const IntroCSS = () => css`
   .blink {
     position: absolute;
-    top: 50%;
+    top: calc(50% - 50px);
     left: 50%;
     width: 100%;
     transform: translate(-50%, -50%);
@@ -536,18 +411,13 @@ const IntroCSS = (theme: Theme) => css`
       align-items: center;
       justify-content: center;
       height: 200px;
-      width: 100%;
-      max-width: 200px;
+      width: 200px;
       overflow: hidden;
       margin: 0 auto;
       border-top-left-radius: 60%;
       border-top-right-radius: 0;
-      ${MobileStyle(
-        css(`
-            // max-width: 100px; 
-            // border-top-left-radius: 30%;
-        `)
-      )}
+      transform: translateZ(0);
+      will-change: transform;
 
       .eye {
         width: 100%;
@@ -558,25 +428,12 @@ const IntroCSS = (theme: Theme) => css`
         border-bottom-right-radius: 120%;
         top: -50px;
         border-bottom: 8px inset #000;
-        ${MobileStyle(
-          css(` 
-              // border-bottom-left-radius: 40%;
-              // border-bottom-right-radius: 60%;
-          `)
-        )}
       }
 
       .iris {
         width: 50%;
         max-width: 300px;
         height: 300px;
-
-        ${MobileStyle(
-          css(`
-            // max-width: 150px;
-            // height: 150px; 
-          `)
-        )}
 
         &:before {
           content: '';
@@ -587,18 +444,7 @@ const IntroCSS = (theme: Theme) => css`
           top: 30%;
           background: black;
           transform: translate(-50%, -50%);
-          border-top-left-radius: 10%;
-          border-top-right-radius: 10%;
-          border-bottom-left-radius: 40%;
-          border-bottom-right-radius: 80%;
-          ${MobileStyle(
-            css(` 
-              // border-top-left-radius: 5%;
-              // border-top-right-radius: 5%;
-              // border-bottom-left-radius: 20%;
-              // border-bottom-right-radius: 40%;
-          `)
-          )}
+          border-radius: 10% 10% 80% 40%;
         }
 
         &:after {
@@ -615,48 +461,28 @@ const IntroCSS = (theme: Theme) => css`
     }
   }
 
-  @keyframes blink {
-    78% {
-      transform: none;
-      animation-timing-function: ease-in;
-    }
-    81% {
-      transform: translateY(50px) scaleY(0);
-    }
-    88% {
-      transform: none;
-      animation-timing-function: ease-in;
-    }
-    90% {
-      transform: none;
-      animation-timing-function: ease-in;
-    }
-    93% {
-      transform: translateY(50px) scaleY(0);
-    }
-    100% {
-      animation-timing-function: ease-out;
-    }
-  }
-
   position: fixed;
   top: 0;
   left: 0;
   right: 0;
   bottom: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
   height: 100vh;
   background-color: #111;
 
-  svg {
+  .svg-box {
+    position: absolute;
+    top: calc(50% - 50px);
+    left: 50%;
+    width: 100%;
     max-width: 500px;
-    margin: 0 auto;
+    margin-left: -250px;
+    margin-top: -250px;
 
     ${MobileStyle(
       css(`
-          max-width: 250px; 
+          max-width: 250px;
+          margin-left: -125px;
+          margin-top: -125px; 
       `)
     )}
   }

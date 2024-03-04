@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { MutableRefObject, useRef } from 'react'
+import { ReactNode, useRef } from 'react'
 import { NextPage } from 'next'
 import Link from 'next/link'
 
@@ -10,15 +10,14 @@ import { css, Theme } from '@emotion/react'
 import { MobileStyle, TabletStyle } from '@/styles/mediaQuery'
 import Intro from '@/components/intro'
 import { useThemeStore } from '@/lib/store'
-
-export type TRef = MutableRefObject<any>
+import { randomNumber } from '@/lib/utils'
 
 const HomePage: NextPage = () => {
   const { theme } = useThemeStore()
-  const refContent: TRef = useRef()
-  const refTitle: TRef = useRef()
-  const refDesc: TRef = useRef()
-  const refButton: TRef = useRef()
+  const refContent = useRef<HTMLDivElement>(null)
+  const refTitle = useRef<HTMLParagraphElement>(null)
+  const refDesc = useRef<HTMLParagraphElement>(null)
+  const refButton = useRef<HTMLAnchorElement>(null)
   useGSAP(() => {
     const t0 = gsap.timeline()
     t0.set(refContent.current, {
@@ -43,19 +42,41 @@ const HomePage: NextPage = () => {
     )
   })
 
+  const setDrops = (): ReactNode => {
+    const currentHour = new Date().getHours()
+    let dropLength
+
+    if (currentHour <= 3) dropLength = randomNumber(20, 30)
+    else if (currentHour >= 6 && currentHour < 19) dropLength = 6
+    else dropLength = 12
+
+    const items = [...Array(dropLength)].map(() => 0)
+
+    return items.map((item, itemIdx) => (
+      <div
+        className="line"
+        style={{ marginRight: randomNumber(10, 90) + '%' }}
+        key={`drop-${itemIdx}`}
+      >
+        <span style={{ animationDelay: 2 + 1.5 * itemIdx + 's' }}></span>
+      </div>
+    ))
+  }
+
   return (
     <div css={ContainerCSS} style={{}} ref={refContent}>
+      <div className="lines">{setDrops()}</div>
       <div css={ContentCSS}>
         <Intro />
         <p className="title" ref={refTitle}>
           HI I&apos;m Yiseul
         </p>
         <p className="desc" ref={refDesc}>
-          5년차 프론트엔드 개발자 오이슬입니다 <br />
+          3년차 프론트엔드 개발자 오이슬입니다 <br />
           숫자와 계산하는 것을 좋아합니다 <br />
           나와 다른 것에 편견이 없어 코딩 스타일이나 성향이 다른 사람과도 함께
           어우러질 줄 압니다 <br />
-          일을 잘하는 것은 상대방이 일하기 편하게 해주는 것이라고 생각합니다
+          일하기 편하게 해주는 것이 일을 잘 하는 것이라고 생각합니다
         </p>
         <Link
           href={'/projects'}
@@ -105,10 +126,60 @@ export const ContainerCSS = (theme: Theme) => css`
   display: flex;
   flex-direction: column;
   max-width: ${theme.layout.contents}px;
-  min-height: calc(100vh - ${theme.sizes.gnb}px);
+  min-height: calc(100vh - ${theme.sizes.gnb * 2}px);
   font-size: ${theme.fontSizes.m};
   padding: 0 ${theme.spacings.l}px;
   margin: 0 auto;
+
+  .lines {
+    overflow: hidden;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 0;
+
+    .line {
+      opacity: 0.2;
+      overflow: hidden;
+      position: absolute;
+      width: 2px;
+      height: 100vh;
+      top: 0;
+      left: 0;
+      right: 0;
+      margin-left: auto;
+      transform: rotate(-30deg);
+
+      span {
+        display: block;
+        position: absolute;
+        height: 72px;
+        width: 100%;
+        top: -50%;
+        left: 0;
+        background: linear-gradient(
+          to bottom,
+          rgba(255, 255, 255, 0) 0%,
+          ${theme.colors.white} 75%,
+          ${theme.colors.white} 100%
+        );
+        animation: drop 8s 0s infinite;
+        animation-fill-mode: forwards;
+        animation-timing-function: cubic-bezier(0.4, 0.26, 0, 0.97);
+      }
+    }
+  }
+
+  @keyframes drop {
+    0% {
+      top: -20%;
+    }
+    100% {
+      top: 150%;
+    }
+  }
 
   ${TabletStyle(css`
     max-width: 100%;
@@ -123,6 +194,7 @@ export const ContainerCSS = (theme: Theme) => css`
 `
 
 const ContentCSS = (theme: Theme) => css`
+  position: relative;
   display: flex;
   flex-direction: column;
   align-items: flex-start;
@@ -132,6 +204,7 @@ const ContentCSS = (theme: Theme) => css`
   padding: ${theme.sizes.gnb / 2}px ${theme.spacings.xxl}px ${theme.sizes.gnb}px;
   margin-top: auto;
   margin-bottom: auto;
+  z-index: 1;
 
   .title {
     font-size: ${theme.fontSizes.l};
@@ -150,12 +223,16 @@ const ContentCSS = (theme: Theme) => css`
       padding-right: 0;
       
       .title{
-        // font-size: ${theme.fontSizes.hl};
         text-align: center;
       }
-      .desc{
+      .desc{ 
+        max-width: 300px;
         font-size: ${theme.fontSizes.s};
-        text-align: center; 
+        text-align: center;
+        word-break: keep-all;
+      }
+      .go-btn{
+        margin-top: 8px;
       }
   `)
   )}

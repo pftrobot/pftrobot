@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { Fragment, useEffect, useRef, useState } from 'react'
+import { Fragment, useRef, useState } from 'react'
 import { createPortal } from 'react-dom'
 import { NextPage } from 'next'
 import Link from 'next/link'
@@ -9,8 +9,8 @@ import gsap from 'gsap-trial'
 import { useGSAP } from '@gsap/react'
 import { css, Theme } from '@emotion/react'
 import Vimeo from '@u-wave/react-vimeo'
-import { ButtonCSS, ContainerCSS, TRef } from './index'
-import { MobileStyle } from '@/styles/mediaQuery'
+import { ButtonCSS, ContainerCSS } from './index'
+import { MobileStyle, TabletStyle } from '@/styles/mediaQuery'
 
 import { lockScroll, unlockScroll, useMounted } from '@/lib/utils'
 import { useThemeStore } from '@/lib/store'
@@ -33,19 +33,16 @@ interface IProject {
   url?: string
 }
 
-type TClickAnimation = (isOpen?: boolean) => void
-type TOpenModal = (target: IProject) => void
-
 const ProjectPage: NextPage = () => {
   const { theme } = useThemeStore()
   const isMounted = useMounted()
   const [currentProject, setCurrentProject] = useState<IProject | null>(null)
-  const refContent: TRef = useRef()
-  const refTitle: TRef = useRef()
-  const refList: TRef = useRef()
-  const refButton: TRef = useRef()
-  const refModalWrap: TRef = useRef()
-  const refModal: TRef = useRef()
+  const refContent = useRef<HTMLDivElement>(null)
+  const refTitle = useRef<HTMLParagraphElement>(null)
+  const refList = useRef<HTMLDivElement>(null)
+  const refButton = useRef<HTMLAnchorElement>(null)
+  const refModalWrap = useRef<HTMLDivElement>(null)
+  const refModal = useRef<HTMLDivElement>(null)
   const projectList: IProject[] = [
     {
       title: 'Solvook',
@@ -199,8 +196,8 @@ const ProjectPage: NextPage = () => {
     },
     {
       title: 'SK Magic 360',
-      summary: 'SK 매직의 제품을들 360 뷰로 둘러볼 수 있는 체험존',
-      desc: 'SK 매직의 제품을들 360 뷰로 둘러볼 수 있는 체험존',
+      summary: 'SK 매직의 제품들을 360 뷰로 둘러볼 수 있는 체험존',
+      desc: 'SK 매직의 제품들을 360 뷰로 둘러볼 수 있는 체험존',
       desc2:
         '생산성 향상을 위한 가이드 시스템을 구축했습니다. 디자인 가이드를 토대로 레이아웃, 폰트, 공통 컴포넌트로 분류 후 코드와 설명을 정리하여 사전작업 시간을 단축하는 데에 기여했습니다.',
       tech: ['WebGL', 'JS'],
@@ -226,6 +223,34 @@ const ProjectPage: NextPage = () => {
     playsInline: false,
   }
 
+  const clickAnimation = (isOpen?: boolean) => {
+    if (isOpen) {
+      gsap.to(refModalWrap.current, {
+        duration: 0.3,
+        visibility: 'visible',
+        alpha: 1,
+      })
+      gsap.to(refModal.current, { duration: 0.3, x: 0 })
+      if (refModal?.current?.scrollTop) refModal.current.scrollTop = 0
+    } else {
+      const t0 = gsap.timeline()
+      t0.to(refModal.current, { duration: 0.3, x: '100%' }, 0)
+        .to(refModalWrap.current, { duration: 0.3, alpha: 0 }, 0)
+        .to(refModalWrap.current, { duration: 0.3, visibility: 'hidden' }, 0.2)
+    }
+  }
+
+  const openModal = (target: IProject) => {
+    if (currentProject !== target) setCurrentProject(target)
+    lockScroll()
+    clickAnimation(true)
+  }
+
+  const closeModal = () => {
+    unlockScroll()
+    clickAnimation(false)
+  }
+
   useGSAP(
     () => {
       if (isMounted) {
@@ -235,22 +260,6 @@ const ProjectPage: NextPage = () => {
     },
     { dependencies: [isMounted], scope: refModalWrap }
   )
-
-  const clickAnimation: TClickAnimation = (isOpen) => {
-    if (isOpen) {
-      gsap.to(refModalWrap.current, {
-        duration: 0.3,
-        visibility: 'visible',
-        alpha: 1,
-      })
-      gsap.to(refModal.current, { duration: 0.3, x: 0 })
-    } else {
-      const t0 = gsap.timeline()
-      t0.to(refModal.current, { duration: 0.3, x: '100%' }, 0)
-        .to(refModalWrap.current, { duration: 0.3, alpha: 0 }, 0)
-        .to(refModalWrap.current, { duration: 0.3, visibility: 'hidden' }, 0.2)
-    }
-  }
 
   useGSAP(() => {
     const t0 = gsap.timeline()
@@ -301,17 +310,6 @@ const ProjectPage: NextPage = () => {
       )
   })
 
-  const openModal: TOpenModal = (target) => {
-    if (currentProject !== target) setCurrentProject(target)
-    lockScroll()
-    clickAnimation(true)
-  }
-
-  const closeModal = () => {
-    unlockScroll()
-    clickAnimation(false)
-  }
-
   return (
     <div css={ContainerCSS} ref={refContent}>
       <div css={SubContentCSS}>
@@ -323,54 +321,13 @@ const ProjectPage: NextPage = () => {
             const firstMedia = projectItem.media[0]
 
             return (
-              <div
-                className="item"
-                onClick={() => openModal(projectItem)}
+              <ProjectItem
+                item={projectItem}
+                thumbnailSource={firstMedia}
+                handleClick={openModal}
+                videoOption={videoOptions}
                 key={`project-item_${projectIdx}`}
-              >
-                <div className="media">
-                  {firstMedia.type === 'video' ? (
-                    <div className={'player-box'}>
-                      <div
-                        className="embed-container"
-                        style={{
-                          padding: `${firstMedia.ratio ? firstMedia.ratio : '50'}% 0 0`,
-                        }}
-                      >
-                        <Vimeo
-                          video={`https://player.vimeo.com/video/${firstMedia.source}?h=41e251e138&autoplay=1&loop=1&title=0&byline=0&portrait=0`}
-                          {...videoOptions}
-                        />
-                      </div>
-                    </div>
-                  ) : (
-                    <Image
-                      src={
-                        isProd
-                          ? '/pftrobot' + firstMedia.source
-                          : firstMedia.source
-                      }
-                      alt={'item image'}
-                      width={500}
-                      height={500}
-                    />
-                  )}
-                </div>
-                <div className="floating-area">
-                  <p className="title">{projectItem.title}</p>
-                  <p className="desc">{projectItem.summary}</p>
-                  <div className="tech" css={TechBoxCSS}>
-                    {projectItem.tech.map((techItem, techIdx) => {
-                      if (techIdx > 3) return
-                      return (
-                        <span key={`current-item_tech_${techIdx}`}>
-                          {techItem}
-                        </span>
-                      )
-                    })}
-                  </div>
-                </div>
-              </div>
+              />
             )
           })}
         </div>
@@ -450,6 +407,8 @@ const ProjectPage: NextPage = () => {
                                 alt={'item image'}
                                 width={500}
                                 height={500}
+                                priority={true}
+                                unoptimized={true}
                               />
                             )}
                           </Fragment>
@@ -490,6 +449,64 @@ const ProjectPage: NextPage = () => {
       ) : (
         <></>
       )}
+    </div>
+  )
+}
+
+interface ProjectItemProps {
+  item: IProject
+  thumbnailSource: IMedia
+  handleClick: (target: IProject) => void
+  videoOption: {}
+}
+const ProjectItem = ({
+  item,
+  thumbnailSource,
+  handleClick,
+  videoOption,
+}: ProjectItemProps) => {
+  return (
+    <div className="item" onClick={() => handleClick(item)}>
+      <div className="media">
+        {thumbnailSource.type === 'video' ? (
+          <div className={'player-box'}>
+            <div
+              className="embed-container"
+              style={{
+                padding: `${thumbnailSource.ratio ? thumbnailSource.ratio : '50'}% 0 0`,
+              }}
+            >
+              <Vimeo
+                video={`https://player.vimeo.com/video/${thumbnailSource.source}?h=41e251e138&autoplay=1&loop=1&title=0&byline=0&portrait=0`}
+                {...videoOption}
+              />
+            </div>
+          </div>
+        ) : (
+          <Image
+            src={
+              isProd
+                ? '/pftrobot' + thumbnailSource.source
+                : thumbnailSource.source
+            }
+            alt={'item image'}
+            width={500}
+            height={500}
+            priority={true}
+            unoptimized={true}
+          />
+        )}
+      </div>
+      <div className="floating-area">
+        <p className="title">{item.title}</p>
+        <p className="desc">{item.summary}</p>
+        <div className="tech" css={TechBoxCSS}>
+          {item.tech.map((techItem, techIdx) => {
+            if (techIdx > 3) return
+            return <span key={`current-item_tech_${techIdx}`}>{techItem}</span>
+          })}
+        </div>
+      </div>
     </div>
   )
 }
@@ -603,6 +620,9 @@ const ListCSS = (theme: Theme) => css`
             width: 100%;
             height: 100%;
           }
+          iframe {
+            border-radius: 8px;
+          }
         }
       }
       video {
@@ -641,6 +661,7 @@ const ListCSS = (theme: Theme) => css`
         font-size: ${theme.fontSizes.hl};
         font-weight: 400;
         line-height: 1.3;
+        word-break: keep-all;
         margin-top: ${theme.spacings.xxs}px;
       }
 
@@ -648,7 +669,7 @@ const ListCSS = (theme: Theme) => css`
         margin-top: ${theme.spacings.m}px;
       }
 
-      ${MobileStyle(
+      ${TabletStyle(
         css(`
           opacity: 1;
           transform: none;
@@ -662,7 +683,7 @@ const ListCSS = (theme: Theme) => css`
             margin-top: ${theme.spacings.xxxs}px;
           }
            .tech{
-            display: none;
+            margin-top: ${theme.spacings.xxs}px;
            }
         `)
       )}
@@ -685,6 +706,13 @@ const ListCSS = (theme: Theme) => css`
           transform: translateY(0);
         }
       }
+
+      ${TabletStyle(
+        css(`
+        .floating-area{
+          opacity: 0;
+        `)
+      )}
     }
   }
 `
@@ -842,7 +870,7 @@ const OverlayCSS = (theme: Theme) => css`
 
         ${MobileStyle(
           css(`
-            max-height: 360px;
+            max-height: 1000px;
           `)
         )}
 
@@ -861,6 +889,11 @@ const OverlayCSS = (theme: Theme) => css`
             left: 0;
             width: 100%;
             height: 100%;
+          }
+
+          iframe {
+            overflow: hidden;
+            border-radius: 8px;
           }
         }
       }
@@ -898,7 +931,7 @@ const OverlayCSS = (theme: Theme) => css`
           css(`
           width: 14px;
           height: 14px;
-        margin-top: -${theme.spacings.xxxxxs}px;
+          margin-top: -${theme.spacings.xxxxxs}px;
           background-size: 14px;
         `)
         )}

@@ -42,6 +42,7 @@ const GNB = () => {
 export default GNB
 
 const GnbCSS = (theme: Theme) => css`
+  position: relative;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -49,6 +50,7 @@ const GnbCSS = (theme: Theme) => css`
   height: ${theme.sizes.gnb}px;
   padding: 0 ${theme.spacings.l}px;
   margin: 0 auto;
+  z-index: 99;
 
   .logo-area {
     display: block;

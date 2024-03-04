@@ -1,79 +1,135 @@
-import { MutableRefObject, useRef } from 'react'
+import * as React from 'react'
+import { FormEvent, useRef, useState } from 'react'
+import { createPortal } from 'react-dom'
 import { NextPage } from 'next'
 import Link from 'next/link'
-import Image from 'next/image'
 
-import gsap from 'gsap-trial'
+import gsap from 'gsap'
 import { useGSAP } from '@gsap/react'
-
+import emailjs from '@emailjs/browser'
 import { css, Theme } from '@emotion/react'
 import { ButtonCSS, ContainerCSS } from './index'
 import { SubContentCSS } from './projects'
-import { MobileStyle } from '@/styles/mediaQuery'
 
-import emailjs from '@emailjs/browser'
+import { lockScroll, unlockScroll, useMounted } from '@/lib/utils'
 import { useThemeStore } from '@/lib/store'
+import Image from '@/components/common/Image'
 
-type TRef = MutableRefObject<any>
-
-interface IMail {
-  name: string
-  email: string
-  message: string
-}
+const isProd = process.env.NODE_ENV === 'production'
 
 const ContactPage: NextPage = () => {
   const { theme } = useThemeStore()
-  const refContent: TRef = useRef()
-  const form: TRef = useRef()
+  const isMounted = useMounted()
+  const [isLoading, setIsLoading] = useState<boolean>(false)
+  const refContents = useRef<HTMLDivElement>(null)
+  const refForm = useRef<HTMLFormElement>(null)
+  const refName = useRef<HTMLInputElement>(null)
+  const refEmail = useRef<HTMLInputElement>(null)
+  const refContent = useRef<HTMLTextAreaElement>(null)
 
-  const sendEmail = () => {
-    emailjs
-      .sendForm(
-        'service_3kxyi38',
-        'template_8xuweqg',
-        form.current,
-        'eBY8yf0yt5DdtqvhP'
+  const showLoading = () => {
+    lockScroll()
+    setIsLoading(true)
+  }
+  const hideLoading = () => {
+    unlockScroll()
+    setIsLoading(false)
+  }
+
+  const sendEmail = (e: FormEvent) => {
+    e.preventDefault()
+
+    if (
+      !(
+        refForm.current &&
+        refName.current &&
+        refEmail.current &&
+        refContent.current
       )
-      .then(
-        (result) => {
-          alert('메일을 성공적으로 전송했어요. 감사합니다.')
-        },
-        (error) => {
-          alert('메일 전송에 실패했어요. 잠시 후 다시 시도해주세요')
-        }
-      )
+    )
+      return
+
+    if (
+      refName.current.value === '' ||
+      refEmail.current.value === '' ||
+      refContent.current.value === ''
+    ) {
+      alert('내용을 모두 입력해주세요.')
+    } else {
+      showLoading()
+      emailjs
+        .sendForm(
+          'service_3kxyi38',
+          'template_8xuweqg',
+          refForm.current,
+          'eBY8yf0yt5DdtqvhP'
+        )
+        .then(
+          () => {
+            hideLoading()
+            alert('메일을 성공적으로 전송했어요. 감사합니다.')
+            if (refName.current && refEmail.current && refContent.current) {
+              refName.current.value = ''
+              refEmail.current.value = ''
+              refContent.current.value = ''
+            }
+          },
+          (error) => {
+            alert('메일 전송에 실패했어요. 잠시 후 다시 시도해주세요.')
+            console.log(error)
+          }
+        )
+    }
+  }
+
+  const handleCopyBtn = (text: string) => {
+    window.navigator.clipboard.writeText(text)
+    alert('텍스트가 복사되었습니다.')
   }
 
   useGSAP(() => {
     const t0 = gsap.timeline()
 
-    t0.set(refContent.current, {
+    t0.set(refContents.current, {
       alpha: 0,
     })
 
-    t0.to(refContent.current, {
+    t0.to(refContents.current, {
       duration: 0.8,
       alpha: 1,
     })
   })
 
   return (
-    <div css={ContainerCSS} ref={refContent}>
+    <div css={ContainerCSS} ref={refContents}>
       <div css={SubContentCSS}>
         <p className="title">Contact</p>
         <p className="desc">
           아래 형식으로 문의하거나 <span>pftrobot@gmail.com</span>{' '}
-          {/*<button css={CopyBtnCSS}>COPY</button>*/}로 이메일을 보내주세요
+          <button
+            onClick={() => handleCopyBtn('pftrobot@gmail.com')}
+            css={CopyBtnCSS}
+          >
+            COPY
+          </button>{' '}
+          로 이메일을 보내주세요
         </p>
-        <form ref={form} onSubmit={sendEmail} css={FormCSS}>
-          <input type="text" name="name" placeholder={'이름'} />
-          <input type="email" name="email" placeholder={'메일 주소'} />
-          <textarea name="message" placeholder={'내용을 입력해주세요'} />
-          <input type="submit" value="전송하기" />
-          {/*<button className="submit-btn">*/}
-          {/*  <span>전송하기</span>*/}
-          {/*</button>*/}
+        <form ref={refForm} onSubmit={sendEmail} css={FormCSS}>
+          <input type="text" name="name" placeholder={'이름'} ref={refName} />
+          <input
+            type="email"
+            name="email"
+            placeholder={'메일 주소'}
+            ref={refEmail}
+          />
+          <textarea
+            name="message"
+            placeholder={'내용을 입력해주세요'}
+            ref={refContent}
+          />
+          <button className="submit-btn">
+            <input type="submit" value="전송하기" />
+          </button>
         </form>
         <Link href={'/'} css={ButtonCSS}>
           홈으로
@@ -107,6 +163,28 @@ const ContactPage: NextPage = () => {
           </div>
         </Link>
       </div>
+
+      {isMounted && isLoading ? (
+        createPortal(
+          <div css={OverlayCSS}>
+            <div className="spinner">
+              <Image
+                src={
+                  isProd
+                    ? '/pftrobot' + '/icons/spinner.svg'
+                    : '/icons/spinner.svg'
+                }
+                alt={'loading image'}
+                width={50}
+                height={50}
+              />
+            </div>
+          </div>,
+          document.getElementById('overlay')!
+        )
+      ) : (
+        <></>
+      )}
     </div>
   )
 }
@@ -146,7 +224,7 @@ const FormCSS = (theme: Theme) => css`
   width: 100%;
   margin-top: ${theme.spacings.m}px;
 
-  input,
+  input:not([type='submit']),
   textarea {
     display: block;
     width: 90%;
@@ -181,12 +259,13 @@ const FormCSS = (theme: Theme) => css`
     border: solid 2px ${theme.colors.gray700};
     border-radius: 3px;
 
-    span {
+    input {
       position: relative;
       font-size: ${theme.fontSizes.xs};
       font-weight: 500;
       letter-spacing: -0.3px;
       color: ${theme.colors.white};
+      background-color: transparent;
       z-index: 2;
       transition: all 0.2s;
     }
@@ -206,7 +285,7 @@ const FormCSS = (theme: Theme) => css`
 
     &:hover {
       border-color: ${theme.colors.gray100};
-      span {
+      input {
         color: ${theme.colors.black};
         font-weight: ${theme.fontWeights.bold};
       }
@@ -214,6 +293,37 @@ const FormCSS = (theme: Theme) => css`
       &:before {
         width: 100%;
       }
+    }
+  }
+`
+
+const OverlayCSS = () => css`
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 99;
+  background-color: rgba(0, 0, 0, 0.8);
+
+  .spinner {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    margin-left: -30px;
+    margin-top: -30px;
+    animation: spin 2.5s infinite;
+    -webkit-animation-timing-function: cubic-bezier(0.55, 0.15, 0.45, 0.85);
+    animation-timing-function: cubic-bezier(0.55, 0.15, 0.45, 0.85);
+  }
+
+  @keyframes spin {
+    0%,
+    100% {
+      transform: rotate(0deg) scale(1);
+    }
+    50% {
+      transform: rotate(900deg) scale(0.8);
     }
   }
 `

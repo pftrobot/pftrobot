@@ -1,4 +1,3 @@
-// import '@/styles/globals.css'
 import type { AppContext, AppInitialProps, AppProps } from 'next/app'
 import Head from 'next/head'
 import { globalStyles } from '@/styles/GlobalStyle'
@@ -12,7 +11,6 @@ import Layout from '@/components/common/Layout'
 
 type CustomPageProps = {
   isDarkMode: boolean
-  // dehydratedState?: DehydratedState;
 }
 
 type CustomAppProps = AppProps<CustomPageProps>
@@ -29,31 +27,26 @@ const App: NextComponentType<AppContext, AppInitialProps, CustomAppProps> = ({
         <meta charSet="utf-8" />
         <meta
           name="viewport"
-          // content="width=device-width, initial-scale=1, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0, viewport-fit=cover"
           content="width=device-width, initial-scale=1, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0"
         />
-        {/*
-        <link rel="icon" href="/favicon.ico" />
+        <link rel="icon" href="/pftrobot/favicon/favicon.ico" />
         <link
           rel="icon"
           type="image/png"
           sizes="32x32"
-          href="/favicon-32x32.png"
+          href="/pftrobot/favicon/favicon.png"
         />
         <link
           rel="icon"
           type="image/png"
           sizes="16x16"
-          href="/favicon-16x16.png"
+          href="/pftrobot/favicon/favicon.png"
         />
-        <link rel="/manifest" href="/site.webmanifest" />
-        <meta name="theme-color" content="#ffffff" />
-        */}
+        <meta name="theme-color" content="#111" />
         <meta name="description" content="write descriptions here" />
-        {/*<meta name="og:image" content="og.png" />*/}
-        <title>포트폴리오</title>
+        <meta name="og:image" content="/pftrobot/favicon/favicon.png" />
+        <title>오이슬</title>
       </Head>
-      {/*<ThemeProvider theme={theme}>*/}
       <ThemeProvider theme={theme === 'dark' ? themeDark : themeLight}>
         {globalStyles}
         <Layout>
