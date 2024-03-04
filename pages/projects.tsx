@@ -519,6 +519,7 @@ export const SubContentCSS = (theme: Theme) => css`
   align-items: flex-start;
   gap: ${theme.spacings.m}px;
   width: 100%;
+  word-break: keep-all;
   padding: ${theme.sizes.gnb}px ${theme.spacings.xxl}px ${theme.sizes.gnb * 2}px;
 
   & > .title {
@@ -528,6 +529,7 @@ export const SubContentCSS = (theme: Theme) => css`
 
   & > .desc {
     font-size: ${theme.fontSizes.hl};
+    line-height: 1.3;
   }
 
   ${MobileStyle(

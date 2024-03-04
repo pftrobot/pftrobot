@@ -14,6 +14,7 @@ import { SubContentCSS } from './projects'
 import { lockScroll, unlockScroll, useMounted } from '@/lib/utils'
 import { useThemeStore } from '@/lib/store'
 import Image from '@/components/common/Image'
+import { MobileStyle } from '@/styles/mediaQuery'
 
 const isProd = process.env.NODE_ENV === 'production'
 
@@ -244,6 +245,13 @@ const FormCSS = (theme: Theme) => css`
     &:focus-visible {
       outline: none;
     }
+
+    ${MobileStyle(
+      css(`
+          width: 100%;
+          max-width: unset;
+      `)
+    )}
   }
 
   textarea {
@@ -294,6 +302,12 @@ const FormCSS = (theme: Theme) => css`
         width: 100%;
       }
     }
+
+    ${MobileStyle(
+      css(`
+          width: 100%;
+      `)
+    )}
   }
 `
 

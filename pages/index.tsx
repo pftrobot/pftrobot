@@ -232,7 +232,7 @@ const ContentCSS = (theme: Theme) => css`
         word-break: keep-all;
       }
       .go-btn{
-        margin-top: 8px;
+        margin-top: ${theme.spacings.m}px;
       }
   `)
   )}
@@ -277,8 +277,8 @@ export const ButtonCSS = (theme: Theme) => css`
   ${MobileStyle(
     css(`
           font-size: ${theme.fontSizes.xxs};
-          margin-left: 0;
-          margin: 0 auto; 
+          margin-left: auto;
+          margin-right: ${theme.spacings.xxxs}px;
       `)
   )}
 `
