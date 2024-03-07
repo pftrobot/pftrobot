@@ -16,7 +16,13 @@ import { useThemeStore } from '@/lib/store'
 import Image from '@/components/common/Image'
 import { MobileStyle } from '@/styles/mediaQuery'
 
-const isProd = process.env.NODE_ENV === 'production'
+const assetPrefix =
+  process.env.NODE_ENV === 'production'
+    ? process.env.NEXT_PUBLIC_PROD_ASSET_PREFIX
+    : ''
+const serviceId = process.env.NEXT_PUBLIC_EMAILJS_SERVICE_ID
+const templateId = process.env.NEXT_PUBLIC_EMAILJS_TEMPLATE_ID
+const publicKey = process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY
 
 const ContactPage: NextPage = () => {
   const { theme } = useThemeStore()
@@ -41,46 +47,46 @@ const ContactPage: NextPage = () => {
     e.preventDefault()
 
     if (
-      !(
-        refForm.current &&
-        refName.current &&
-        refEmail.current &&
-        refContent.current
-      )
+      !refForm.current ||
+      !refName.current ||
+      !refEmail.current ||
+      !refContent.current
     )
       return
 
-    if (
-      refName.current.value === '' ||
-      refEmail.current.value === '' ||
-      refContent.current.value === ''
-    ) {
+    const name = refName.current.value.trim()
+    const email = refEmail.current.value.trim()
+    const content = refContent.current.value.trim()
+
+    if (!name || !email || !content) {
       alert('내용을 모두 입력해주세요.')
-    } else {
-      showLoading()
-      emailjs
-        .sendForm(
-          'service_3kxyi38',
-          'template_8xuweqg',
-          refForm.current,
-          'eBY8yf0yt5DdtqvhP'
-        )
-        .then(
-          () => {
-            hideLoading()
-            alert('메일을 성공적으로 전송했어요. 감사합니다.')
-            if (refName.current && refEmail.current && refContent.current) {
-              refName.current.value = ''
-              refEmail.current.value = ''
-              refContent.current.value = ''
-            }
-          },
-          (error) => {
-            alert('메일 전송에 실패했어요. 잠시 후 다시 시도해주세요.')
-            console.log(error)
-          }
-        )
+      return
     }
+
+    showLoading()
+
+    emailjs
+      .sendForm(
+        serviceId as string,
+        templateId as string,
+        refForm.current,
+        publicKey as string
+      )
+      .then(
+        () => {
+          hideLoading()
+          alert('메일을 성공적으로 전송했어요. 감사합니다.')
+          if (refName.current && refEmail.current && refContent.current) {
+            refName.current.value = ''
+            refEmail.current.value = ''
+            refContent.current.value = ''
+          }
+        },
+        (error) => {
+          alert('메일 전송에 실패했어요. 잠시 후 다시 시도해주세요.')
+          console.log(error)
+        }
+      )
   }
 
   const handleCopyBtn = (text: string) => {
@@ -170,11 +176,7 @@ const ContactPage: NextPage = () => {
           <div css={OverlayCSS}>
             <div className="spinner">
               <Image
-                src={
-                  isProd
-                    ? '/pftrobot' + '/icons/spinner.svg'
-                    : '/icons/spinner.svg'
-                }
+                src={`${assetPrefix}/icons/spinner.svg`}
                 alt={'loading image'}
                 width={50}
                 height={50}

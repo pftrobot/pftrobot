@@ -54,50 +54,49 @@ const Intro: React.FC = () => {
       ease: 'expo.out',
     }
 
-    const t0 = gsap.timeline()
-    const t1 = gsap.timeline()
+    const timeline_blink = gsap.timeline()
+    const timeline_logo = gsap.timeline()
 
-    t0.set(refIntro.current, {
-      backgroundColor: '#111',
-      alpha: 1,
-    })
-
-    t0.set(refBlink.current, {
-      scale: 1,
-      x: 0,
-      y: 0,
-      alpha: 1,
-    })
-    t0.set(refEye.current, {
-      scale: 0,
-      y: '50px',
-    })
-    t0.set(refDragon.current, {
-      scale: 1,
-      x: 0,
-      y: 0,
-    })
+    timeline_blink
+      .set(refIntro.current, {
+        backgroundColor: '#111',
+        alpha: 1,
+      })
+      .set(refBlink.current, {
+        scale: 1,
+        x: 0,
+        y: 0,
+        alpha: 1,
+      })
+      .set(refEye.current, {
+        scale: 0,
+        y: '50px',
+      })
+      .set(refDragon.current, {
+        scale: 1,
+        x: 0,
+        y: 0,
+      })
 
     refList.forEach((items) => {
-      // ex) items : [ref1_1, ref1_2]
       items.forEach((item) => {
-        // ex) item : ref1_1
-        t1.set(item.current, { drawSVG: 0 })
+        timeline_logo.set(item.current, { drawSVG: 0 })
       })
     })
 
     // blinking the eyes
-    t0.to(
-      refEye.current,
-      {
-        duration: 0.8,
-        delay: 1,
-        scale: 1,
-        y: 0,
-        ease: 'elastic.out(1,0.8)',
-      },
-      0
-    )
+    timeline_blink
+      .to(
+        refEye.current,
+        {
+          duration: 0.8,
+          delay: 1,
+          scale: 1,
+          y: 0,
+          ease: 'elastic.out(1,0.8)',
+        },
+        0
+      )
       .to(
         refEye.current,
         { duration: 0.05, delay: 2, scaleY: 0, y: '50px', ease: 'ease.in' },
@@ -130,10 +129,11 @@ const Intro: React.FC = () => {
         },
         1.6
       )
-      .to(refBlink.current, { duration: 0.2, delay: 3, alpha: 0 }, 1.8)
+      .to(refBlink.current, { duration: 0.2, delay: 3, alpha: 0 }, 1.6)
 
     // drawing the svg lines
-    t1.to(refList[0][0].current, drawOptions, 0)
+    timeline_logo
+      .to(refList[0][0].current, drawOptions, 0)
       .to(refList[0][1].current, drawOptions, 0)
       .to(
         refList[1].flatMap((row) => row.current),
@@ -171,15 +171,16 @@ const Intro: React.FC = () => {
       )
 
     // show the contents
-    t1.to(
-      '.gnb',
-      {
-        duration: 0.8,
-        y: '0',
-        delay: drawDelayTime + drawOverlapTime * 3 + 1.1,
-      },
-      1.2
-    )
+    timeline_logo
+      .to(
+        '.gnb',
+        {
+          duration: 0.8,
+          y: '0',
+          delay: drawDelayTime + drawOverlapTime * 3 + 1.1,
+        },
+        1.2
+      )
       .to(
         '.title',
         {

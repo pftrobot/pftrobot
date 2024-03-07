@@ -1,4 +1,3 @@
-import * as React from 'react'
 import { Fragment, useRef, useState } from 'react'
 import { createPortal } from 'react-dom'
 import { NextPage } from 'next'
@@ -15,7 +14,10 @@ import { MobileStyle, TabletStyle } from '@/styles/mediaQuery'
 import { lockScroll, unlockScroll, useMounted } from '@/lib/utils'
 import { useThemeStore } from '@/lib/store'
 
-const isProd = process.env.NODE_ENV === 'production'
+const assetPrefix =
+  process.env.NODE_ENV === 'production'
+    ? process.env.NEXT_PUBLIC_PROD_ASSET_PREFIX
+    : ''
 
 interface IMedia {
   type: string
@@ -233,8 +235,9 @@ const ProjectPage: NextPage = () => {
       gsap.to(refModal.current, { duration: 0.3, x: 0 })
       if (refModal?.current?.scrollTop) refModal.current.scrollTop = 0
     } else {
-      const t0 = gsap.timeline()
-      t0.to(refModal.current, { duration: 0.3, x: '100%' }, 0)
+      gsap
+        .timeline()
+        .to(refModal.current, { duration: 0.3, x: '100%' }, 0)
         .to(refModalWrap.current, { duration: 0.3, alpha: 0 }, 0)
         .to(refModalWrap.current, { duration: 0.3, visibility: 'hidden' }, 0.2)
     }
@@ -399,11 +402,7 @@ const ProjectPage: NextPage = () => {
                               </div>
                             ) : (
                               <Image
-                                src={
-                                  isProd
-                                    ? '/pftrobot' + currentMedia.source
-                                    : currentMedia.source
-                                }
+                                src={`${assetPrefix}${currentMedia.source}`}
                                 alt={'item image'}
                                 width={500}
                                 height={500}
@@ -484,11 +483,7 @@ const ProjectItem = ({
           </div>
         ) : (
           <Image
-            src={
-              isProd
-                ? '/pftrobot' + thumbnailSource.source
-                : thumbnailSource.source
-            }
+            src={`${assetPrefix}${thumbnailSource.source}`}
             alt={'item image'}
             width={500}
             height={500}
@@ -787,10 +782,8 @@ const OverlayCSS = (theme: Theme) => css`
       font-size: 0;
       border: solid 2px ${theme.colors.gray780};
       border-radius: 50%;
-      background: url(${isProd
-          ? '/pftrobot/icons/arrow_left.svg'
-          : '/icons/arrow_left.svg'})
-        no-repeat 30% 50% ${theme.colors.gray800};
+      background: url(${assetPrefix}/icons/arrow_left.svg) no-repeat 30% 50%
+        ${theme.colors.gray800};
       background-size: 10px;
       transition: background-color 0.2s;
 
@@ -923,10 +916,7 @@ const OverlayCSS = (theme: Theme) => css`
         height: 16px;
         margin-top: -${theme.spacings.xxxxxxs}px;
         margin-right: ${theme.spacings.xxxxs}px;
-        background: url(${isProd
-            ? '/pftrobot/icons/www.svg'
-            : '/icons/www.svg'})
-          no-repeat 0 50%;
+        background: url(${assetPrefix}/icons/www.svg) no-repeat 0 50%;
         background-size: 16px;
 
         ${MobileStyle(

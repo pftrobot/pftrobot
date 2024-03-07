@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { ReactNode, useRef } from 'react'
+import { useMemo, useRef } from 'react'
 import { NextPage } from 'next'
 import Link from 'next/link'
 
@@ -19,30 +19,29 @@ const HomePage: NextPage = () => {
   const refDesc = useRef<HTMLParagraphElement>(null)
   const refButton = useRef<HTMLAnchorElement>(null)
   useGSAP(() => {
-    const t0 = gsap.timeline()
-    t0.set(refContent.current, {
-      alpha: 0,
-    })
-
-    t0.set('.gnb', {
-      y: '-80px',
-    })
-
-    t0.set([refTitle.current, refDesc.current, refButton.current], {
-      y: '80px',
-      alpha: 0,
-    })
-    t0.to(
-      refContent.current,
-      {
-        duration: 0.8,
-        alpha: 1,
-      },
-      0
-    )
+    const timeline_init = gsap.timeline()
+    timeline_init
+      .set(refContent.current, {
+        alpha: 0,
+      })
+      .set('.gnb', {
+        y: '-80px',
+      })
+      .set([refTitle.current, refDesc.current, refButton.current], {
+        y: '80px',
+        alpha: 0,
+      })
+      .to(
+        refContent.current,
+        {
+          duration: 0.8,
+          alpha: 1,
+        },
+        0
+      )
   })
 
-  const setDrops = (): ReactNode => {
+  const setDrops = useMemo(() => {
     const currentHour = new Date().getHours()
     let dropLength
 
@@ -61,11 +60,11 @@ const HomePage: NextPage = () => {
         <span style={{ animationDelay: 2 + 1.5 * itemIdx + 's' }}></span>
       </div>
     ))
-  }
+  }, [])
 
   return (
     <div css={ContainerCSS} style={{}} ref={refContent}>
-      <div className="lines">{setDrops()}</div>
+      <div className="lines">{setDrops}</div>
       <div css={ContentCSS}>
         <Intro />
         <p className="title" ref={refTitle}>
