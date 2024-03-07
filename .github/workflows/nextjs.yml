@@ -55,6 +55,19 @@ jobs:
           cache: ${{ steps.detect-package-manager.outputs.manager }}
         env:
           GSAP_TOKEN: ${{secrets.GSAP_TOKEN}}
+
+
+      - name: Generate Environment Variables File for Production
+        run: |
+          echo "NEXT_PUBLIC_EMAILJS_SERVICE_ID=$NEXT_PUBLIC_EMAILJS_SERVICE_ID" >> .env.production
+          echo "NEXT_PUBLIC_EMAILJS_TEMPLATE_ID=$NEXT_PUBLIC_EMAILJS_TEMPLATE_ID" >> .env.production
+          echo "NEXT_PUBLIC_EMAILJS_PUBLIC_KEY=$NEXT_PUBLIC_EMAILJS_PUBLIC_KEY" >> .env.production
+          echo "NEXT_PUBLIC_PROD_ASSET_PREFIX=$NEXT_PUBLIC_PROD_ASSET_PREFIX" >> .env.production
+        env:
+          NEXT_PUBLIC_EMAILJS_SERVICE_ID: ${{ secrets.NEXT_PUBLIC_EMAILJS_SERVICE_ID }}
+          NEXT_PUBLIC_EMAILJS_TEMPLATE_ID: ${{ secrets.NEXT_PUBLIC_EMAILJS_TEMPLATE_ID }}
+          NEXT_PUBLIC_EMAILJS_PUBLIC_KEY: ${{ secrets.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY }}
+          NEXT_PUBLIC_PROD_ASSET_PREFIX: ${{ secrets.NEXT_PUBLIC_PROD_ASSET_PREFIX }}
       - name: Setup Pages
         uses: actions/configure-pages@v4
         with:
