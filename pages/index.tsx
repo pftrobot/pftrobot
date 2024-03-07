@@ -71,7 +71,7 @@ const HomePage: NextPage = () => {
           HI I&apos;m Yiseul
         </p>
         <p className="desc" ref={refDesc}>
-          3년차 프론트엔드 개발자 오이슬입니다 <br />
+          5년 차 프론트엔드 개발자 오이슬입니다 <br />
           숫자와 계산하는 것을 좋아합니다 <br />
           나와 다른 것에 편견이 없어 코딩 스타일이나 성향이 다른 사람과도 함께
           어우러질 줄 압니다 <br />
